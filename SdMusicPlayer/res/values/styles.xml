@@ -1,0 +1,58 @@
+<resources>
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="Theme.AppCompat.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+    
+    <!-- ImageButton in the bottom bar -->
+    <style name="BottomActionBarItem">
+        <item name="android:layout_width">@dimen/bottom_action_bar_item_width</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingLeft">@dimen/bottom_action_bar_item_padding_left_right</item>
+        <item name="android:paddingRight">@dimen/bottom_action_bar_item_padding_left_right</item>
+        <item name="android:background">@drawable/holo_selector</item>
+    </style>
+
+    <!-- TextView in the bottom bar -->
+    <style name="BottomActionBarText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:paddingTop">3dp</item>
+        <item name="android:textSize">@dimen/text_size_extra_micro</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+    
+    <!-- Custom tabs -->
+    <style name="Tabs">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/tab_height</item>
+        <item name="android:background">@drawable/tab</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingBottom">@dimen/tab_padding_top_bottom</item>
+        <item name="android:paddingLeft">@dimen/tab_padding_left_right</item>
+        <item name="android:paddingRight">@dimen/tab_padding_left_right</item>
+        <item name="android:paddingTop">@dimen/tab_padding_top_bottom</item>
+        <item name="android:textColor">@color/tab_text_color</item>
+        <item name="android:textSize">@dimen/text_size_micro</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">false</item>
+        <item name="android:selectAllOnFocus">false</item>
+    </style>
+
+</resources>
