@@ -31,5 +31,8 @@
 
     <!-- Quick Queue line seperator -->
     <color name="queue_callout_line">#99ffffff</color>
+    
+    <!-- light White -->
+    <color name="lightWhite">#77ffffff</color>
 
 </resources>

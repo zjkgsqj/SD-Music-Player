@@ -2,7 +2,6 @@ package com.example.sdmusicplayer;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 
 import android.app.ActionBar;
@@ -13,22 +12,18 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.TextView;
 
 import com.example.sdmusicplayer.adapters.PagerAdapter;
 import com.example.sdmusicplayer.adapters.ScrollingTabsAdapter;
 import com.example.sdmusicplayer.fragments.MainFragment;
+import com.example.sdmusicplayer.fragments.albumFragment;
+import com.example.sdmusicplayer.fragments.artistFragment;
+import com.example.sdmusicplayer.fragments.folderFragment;
 import com.example.sdmusicplayer.utils.Utils;
 import com.example.sdmusicplayer.widgets.ScrollableTabView;
 
@@ -96,16 +91,14 @@ public class MainActivity extends FragmentActivity implements ServiceConnection{
         }
         
         //Only show tabs that were set in preferences
-        // Recently added tracks
-        if(tabs_set.contains(getResources().getString(R.string.tab_recent)))
+        if(tabs_set.contains(getResources().getString(R.string.tab_mine)))
         	mPagerAdapter.addFragment(new MainFragment());
-        // Artists
         if(tabs_set.contains(getResources().getString(R.string.tab_artists)))
-        	mPagerAdapter.addFragment(new MainFragment());
+        	mPagerAdapter.addFragment(new artistFragment());
         if(tabs_set.contains(getResources().getString(R.string.tab_albums)))
-        	mPagerAdapter.addFragment(new MainFragment());
-        // Albums
-
+        	mPagerAdapter.addFragment(new albumFragment());
+        if(tabs_set.contains(getResources().getString(R.string.tab_folder)))
+        	mPagerAdapter.addFragment(new folderFragment());
 
         // Initiate ViewPager
         ViewPager mViewPager = (ViewPager)findViewById(R.id.viewPager);

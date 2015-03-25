@@ -1,17 +1,19 @@
 
 package com.example.sdmusicplayer.fragments;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.content.Loader;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.BaseColumns;
-import android.provider.MediaStore.Audio;
-import android.provider.MediaStore.Audio.AudioColumns;
-import android.provider.MediaStore.MediaColumns;
-
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import com.example.sdmusicplayer.R;
 
 public class MainFragment extends Fragment{
 
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,  
+            Bundle savedInstanceState){
+		View contextView = inflater.inflate(R.layout.fragment_main, container, false);
+		return contextView;  
+	}
 
 }

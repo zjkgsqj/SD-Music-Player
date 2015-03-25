@@ -164,12 +164,13 @@ https://github.com/CyanogenMod/android_packages_apps_Apollo/tree/cm-10.1
     <string name="overwrite">Overwrite</string>
 
     <!-- Tabs -->
-    <string name="tab_recent">Recent</string>
-    <string name="tab_artists">Artists</string>
-    <string name="tab_albums">Albums</string>
-    <string name="tab_songs">Songs</string>
-    <string name="tab_playlists">Playlists</string>
+    <string name="tab_mine">我的</string>
+    <string name="tab_artists">艺术家</string>
+    <string name="tab_albums">专辑</string>
+    <string name="tab_songs">歌曲</string>
+    <string name="tab_playlists">播放列表</string>
     <string name="tab_genres">Genres</string>
+    <string name="tab_folder">文件夹</string>
     
     <!-- Visualizations -->
     <string name="visual_none">None</string>
