@@ -3,7 +3,7 @@ package com.example.sdmusicplayer.helpers.utils;
 
 import java.lang.ref.WeakReference;
 
-import com.andrew.apolloMod.ui.widgets.VisualizerView;
+import com.example.sdmusicplayer.widgets.VisualizerView;
 
 import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;

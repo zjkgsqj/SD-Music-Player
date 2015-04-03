@@ -7,7 +7,6 @@
 package com.example.sdmusicplayer.helpers.visualizer;
 
 import com.example.sdmusicplayer.R;
-import com.example.sdmusicplayer.helpers.utils.MusicUtils;
 
 import android.content.Context;
 import android.graphics.BlurMaskFilter;
@@ -80,7 +79,10 @@ public class WaveformRenderer extends Renderer
     for (int i = 0; i < data.bytes.length - 1; i++) {
       accumulator += Math.abs(data.bytes[i]);
     }
-    if(MusicUtils.isPlaying()){
+    
+    // sdhuang 2015-4-3
+    //if(MusicUtils.isPlaying()){
+    if(true){
 	    float amp = accumulator/(128 * data.bytes.length);
 	    if(amp > amplitude)
 	    {

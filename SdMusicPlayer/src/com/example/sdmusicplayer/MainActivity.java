@@ -16,21 +16,34 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 
 import com.example.sdmusicplayer.adapters.PagerAdapter;
 import com.example.sdmusicplayer.adapters.ScrollingTabsAdapter;
+import com.example.sdmusicplayer.fragments.BottomActionBarFragment;
 import com.example.sdmusicplayer.fragments.MainFragment;
 import com.example.sdmusicplayer.fragments.albumFragment;
 import com.example.sdmusicplayer.fragments.artistFragment;
 import com.example.sdmusicplayer.fragments.folderFragment;
 import com.example.sdmusicplayer.utils.Utils;
 import com.example.sdmusicplayer.widgets.ScrollableTabView;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelSlideListener;
 
 public class MainActivity extends FragmentActivity implements ServiceConnection{
 
 	ViewPager mViewPager;
 
+    private SlidingUpPanelLayout mPanel;
+    
+	public static final String SAVED_STATE_ACTION_BAR_HIDDEN = "saved_state_action_bar_hidden";
+    
+	BottomActionBarFragment mBActionbar;
+    
+	private boolean isAlreadyStarted = false;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -42,8 +55,61 @@ public class MainActivity extends FragmentActivity implements ServiceConnection{
         
 		setContentView(R.layout.activity_main);
 
+		mBActionbar =(BottomActionBarFragment) getSupportFragmentManager().findFragmentById(R.id.bottomactionbar_new);
+		  
+        mBActionbar.setUpQueueSwitch(this);
+        
+        mPanel = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+
+        mPanel.setAnchorPoint(0);
+        
+        mPanel.setDragView(findViewById(R.id.bottom_action_bar_dragview));
+        //mPanel.setShadowDrawable(getResources().getDrawable(R.drawable.above_shadow));
+        mPanel.setAnchorPoint(0.0f);
+        mPanel.setPanelSlideListener(new PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+                if (slideOffset < 0.2) {
+                	mBActionbar.onCollapsed();
+                    if (!getActionBar().isShowing()) {
+                        getActionBar().show();
+                    }                    
+                } else {
+                	mBActionbar.onExpanded();
+                    if (getActionBar().isShowing()) {
+                        getActionBar().hide();
+                    }
+                }
+            }
+            @Override
+            public void onPanelExpanded(View panel) {  
+            }           
+            @Override
+            public void onPanelCollapsed(View panel) {
+            }
+            @Override
+            public void onPanelAnchored(View panel) {
+            }
+			@Override
+			public void onPanelHidden(View panel) {
+			}
+        });
         initActionBar();
 		initViewPager();
+		
+		String startedFrom = getIntent().getStringExtra("started_from");
+        if(startedFrom!=null){
+        	ViewTreeObserver vto = mPanel.getViewTreeObserver();
+        	vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        	    @Override
+        	    public void onGlobalLayout() {
+        	    	if(!isAlreadyStarted){
+            	        //mPanel.expandPane();
+            	        isAlreadyStarted=true;
+        	    	}
+        	    }
+        	});
+        }
 
 	}
 
