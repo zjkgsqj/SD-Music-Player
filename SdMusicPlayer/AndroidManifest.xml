@@ -8,6 +8,22 @@
         android:minSdkVersion="14"
         android:targetSdkVersion="19" />
 
+    <!-- This is used for Last.fm and Google Music -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Used to check for a data connection -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Used to keep the service running when the phone sleeps -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- Stick Broadcast -->
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <!-- Incoming calls -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- Used to set ringtone -->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+	
     <application
         android:allowBackup="true"
         android:icon="@drawable/icon_music_green_64"
@@ -21,6 +37,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.sdmusicplayer.SongListActivity"
+            android:label="@string/label_local_music" >
         </activity>
     </application>
 

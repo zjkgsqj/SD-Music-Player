@@ -31,6 +31,7 @@ import com.example.sdmusicplayer.utils.Utils;
 import com.example.sdmusicplayer.widgets.ScrollableTabView;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelSlideListener;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
 
 public class MainActivity extends FragmentActivity implements ServiceConnection{
 
@@ -126,8 +127,8 @@ public class MainActivity extends FragmentActivity implements ServiceConnection{
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		/*if (id == R.id.action_settings) {
+		/*int id = item.getItemId();
+		if (id == R.id.action_settings) {
 			return true;
 		}*/
 		return super.onOptionsItemSelected(item);
@@ -208,5 +209,16 @@ public class MainActivity extends FragmentActivity implements ServiceConnection{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+    public void onBackPressed() {
+    	if (mPanel != null &&
+                (mPanel.getPanelState() == PanelState.EXPANDED || mPanel.getPanelState() == PanelState.ANCHORED)) {
+    		mPanel.setPanelState(PanelState.COLLAPSED);
+        }
+    	else{
+    		super.onBackPressed();
+    	}
+    }
 
 }

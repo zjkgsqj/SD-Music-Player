@@ -2,6 +2,9 @@ package com.example.sdmusicplayer.utils;
 
 public final class Constants {
 
+	// Last.fm API
+    public final static String LASTFM_API_KEY = "0bec3f7ec1f914d7c960c12a916c8fb3";
+    
 	public final static String VISUALIZATION_TYPE = "visualization_type";
 	//Image Loading Constants
 	public final static String TYPE_ARTIST = "artist", TYPE_ALBUM = "album", TYPE_GENRE = "genre", TYPE_SONG = "song",
