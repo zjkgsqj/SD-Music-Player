@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.SimpleCursorAdapter;
 
 import com.example.sdmusicplayer.R;
+import com.example.sdmusicplayer.helpers.utils.MusicUtils;
 import com.example.sdmusicplayer.utils.Constants;
 import com.example.sdmusicplayer.view.ViewHolderList;
 
@@ -114,8 +115,9 @@ public class ListViewAdapter extends SimpleCursorAdapter {
     public void setupViewData( Cursor mCursor ){
     	mLineOneText = mCursor.getString(mCursor.getColumnIndexOrThrow(MediaColumns.TITLE));    	
     	mLineTwoText = mCursor.getString(mCursor.getColumnIndexOrThrow(AudioColumns.ARTIST)); 
-    	int duration = mCursor.getInt(mCursor.getColumnIndexOrThrow(AudioColumns.DURATION))/1000;
-    	mLineDuration = duration / 60 + ":" + duration % 60; 
+    	long duration = mCursor.getInt(mCursor.getColumnIndexOrThrow(AudioColumns.DURATION))/1000;
+    	mLineDuration = MusicUtils.makeTimeString(mContext, duration);
+    	//mLineDuration = duration / 60 + ":" + duration % 60; 
         mImageData = new String[]{ mLineTwoText };        
         //mPlayingId = MusicUtils.getCurrentAudioId();
         mCurrentId = mCursor.getLong(mCursor.getColumnIndexOrThrow(BaseColumns._ID));      

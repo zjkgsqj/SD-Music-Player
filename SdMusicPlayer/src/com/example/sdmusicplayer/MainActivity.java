@@ -27,6 +27,8 @@ import com.example.sdmusicplayer.fragments.MainFragment;
 import com.example.sdmusicplayer.fragments.albumFragment;
 import com.example.sdmusicplayer.fragments.artistFragment;
 import com.example.sdmusicplayer.fragments.folderFragment;
+import com.example.sdmusicplayer.helpers.utils.MusicUtils;
+import com.example.sdmusicplayer.service.aidl.IMusicService;
 import com.example.sdmusicplayer.utils.Utils;
 import com.example.sdmusicplayer.widgets.ScrollableTabView;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -199,15 +201,13 @@ public class MainActivity extends FragmentActivity implements ServiceConnection{
     }
 	
 	@Override
-	public void onServiceConnected(ComponentName arg0, IBinder arg1) {
-		// TODO Auto-generated method stub
-		
+	public void onServiceConnected(ComponentName name, IBinder obj) {
+		MusicUtils.mService = IMusicService.Stub.asInterface(obj);
 	}
 
 	@Override
-	public void onServiceDisconnected(ComponentName arg0) {
-		// TODO Auto-generated method stub
-		
+	public void onServiceDisconnected(ComponentName name) {
+		MusicUtils.mService = null;
 	}
 	
 	@Override

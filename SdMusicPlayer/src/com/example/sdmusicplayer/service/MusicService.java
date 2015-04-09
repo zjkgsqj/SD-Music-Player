@@ -13,8 +13,8 @@ package com.example.sdmusicplayer.service;
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
-
-
+*
+*/
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -22,6 +22,10 @@ import java.util.Random;
 import java.util.Vector;
 
 import com.example.sdmusicplayer.R;
+import com.example.sdmusicplayer.preferences.SharedPreferencesCompat;
+import com.example.sdmusicplayer.service.aidl.IMusicService;
+import com.example.sdmusicplayer.utils.Constants;
+import com.example.sdmusicplayer.utils.ImageUtils;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -69,16 +73,18 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.RemoteViews;
-*/
-public class MusicService{
-	
-}
-/*public class MusicService extends Service implements GetBitmapTask.OnBitmapReadyListener {
-   *//**
+
+import com.example.sdmusicplayer.helpers.GetBitmapTask;
+import com.example.sdmusicplayer.helpers.utils.MusicUtils;
+import com.example.sdmusicplayer.helpers.utils.VisualizerUtils;
+import com.example.sdmusicplayer.info.ImageInfo;
+
+public class MusicService extends Service implements GetBitmapTask.OnBitmapReadyListener {
+   /**
     * used to specify whether enqueue() should start playing the new list of
     * files right away, next or once all the currently queued files have been
     * played
-    *//*
+    */
    public static final int NOW = 1;
 
    public static final int NEXT = 2;
@@ -99,31 +105,31 @@ public class MusicService{
 
    public static final int REPEAT_ALL = 2;
 
-   public static final String APOLLO_PACKAGE_NAME = "com.andrew.apolloMod";
+   public static final String SDMUSIC_PACKAGE_NAME = "com.example.sdmusicplayer";
 
    public static final String MUSIC_PACKAGE_NAME = "com.android.music";
 
-   public static final String PLAYSTATE_CHANGED = "com.andrew.apolloMod.playstatechanged";
+   public static final String PLAYSTATE_CHANGED = "com.example.sdmusicplayer.playstatechanged";
 
-   public static final String META_CHANGED = "com.andrew.apolloMod.metachanged";
+   public static final String META_CHANGED = "com.example.sdmusicplayer.metachanged";
 
-   public static final String FAVORITE_CHANGED = "com.andrew.apolloMod.favoritechanged";
+   public static final String FAVORITE_CHANGED = "com.example.sdmusicplayer.favoritechanged";
 
-   public static final String QUEUE_CHANGED = "com.andrew.apolloMod.queuechanged";
+   public static final String QUEUE_CHANGED = "com.example.sdmusicplayer.queuechanged";
 
-   public static final String REPEATMODE_CHANGED = "com.andrew.apolloMod.repeatmodechanged";
+   public static final String REPEATMODE_CHANGED = "com.example.sdmusicplayer.repeatmodechanged";
 
-   public static final String SHUFFLEMODE_CHANGED = "com.andrew.apolloMod.shufflemodechanged";
+   public static final String SHUFFLEMODE_CHANGED = "com.example.sdmusicplayer.shufflemodechanged";
 
-   public static final String PROGRESSBAR_CHANGED = "com.andrew.apolloMod.progressbarchnaged";
+   public static final String PROGRESSBAR_CHANGED = "com.example.sdmusicplayer.progressbarchnaged";
 
-   public static final String REFRESH_PROGRESSBAR = "com.andrew.apolloMod.refreshprogessbar";
+   public static final String REFRESH_PROGRESSBAR = "com.example.sdmusicplayer.refreshprogessbar";
 
-   public static final String CYCLEREPEAT_ACTION = "com.andrew.apolloMod.musicservicecommand.cyclerepeat";
+   public static final String CYCLEREPEAT_ACTION = "com.example.sdmusicplayer.musicservicecommand.cyclerepeat";
 
-   public static final String TOGGLESHUFFLE_ACTION = "com.andrew.apolloMod.musicservicecommand.toggleshuffle";
+   public static final String TOGGLESHUFFLE_ACTION = "com.example.sdmusicplayer.musicservicecommand.toggleshuffle";
 
-   public static final String SERVICECMD = "com.andrew.apolloMod.musicservicecommand";
+   public static final String SERVICECMD = "com.example.sdmusicplayer.musicservicecommand";
 
    public static final String CMDNAME = "command";
 
@@ -147,13 +153,13 @@ public class MusicService{
 
    public static final String CMDTOGGLESHUFFLE = "toggleshuffle";
 
-   public static final String TOGGLEPAUSE_ACTION = "com.andrew.apolloMod.musicservicecommand.togglepause";
+   public static final String TOGGLEPAUSE_ACTION = "com.example.sdmusicplayer.musicservicecommand.togglepause";
 
-   public static final String PAUSE_ACTION = "com.andrew.apolloMod.musicservicecommand.pause";
+   public static final String PAUSE_ACTION = "com.example.sdmusicplayer.musicservicecommand.pause";
 
-   public static final String PREVIOUS_ACTION = "com.andrew.apolloMod.musicservicecommand.previous";
+   public static final String PREVIOUS_ACTION = "com.example.sdmusicplayer.musicservicecommand.previous";
 
-   public static final String NEXT_ACTION = "com.andrew.apolloMod.musicservicecommand.next";
+   public static final String NEXT_ACTION = "com.example.sdmusicplayer.musicservicecommand.next";
 
    private static final int TRACK_ENDED = 1;
 
@@ -245,11 +251,11 @@ public class MusicService{
    // cards.
    private int mCardId;
 
-   private final AppWidget11 mAppWidgetProvider1x1 = AppWidget11.getInstance();
-
-   private final AppWidget42 mAppWidgetProvider4x2 = AppWidget42.getInstance();
-
-   private final AppWidget41 mAppWidgetProvider4x1 = AppWidget41.getInstance();
+//   private final AppWidget11 mAppWidgetProvider1x1 = AppWidget11.getInstance();
+//
+//   private final AppWidget42 mAppWidgetProvider4x2 = AppWidget42.getInstance();
+//
+//   private final AppWidget41 mAppWidgetProvider4x1 = AppWidget41.getInstance();
 
    private String mAlbumBitmapTag;
 
@@ -307,7 +313,7 @@ public class MusicService{
                        mCursor = getCursorForId(mPlayList[mPlayPos]);
                        updateAlbumBitmap();
                        notifyChange(META_CHANGED);
-                       updateNotification();
+                       //updateNotification();
                        setNextTrack();
                    }
                    break;
@@ -394,25 +400,25 @@ public class MusicService{
                pause();
                mPausedByTransientLossOfFocus = false;
                seek(0);
-           } else if (CMDTOGGLEFAVORITE.equals(cmd)) {
-               if (!isFavorite()) {
-                   addToFavorites();
-               } else {
-                   removeFromFavorites();
-               }
+//           } else if (CMDTOGGLEFAVORITE.equals(cmd)) {
+//               if (!isFavorite()) {
+//                   addToFavorites();
+//               } else {
+//                   removeFromFavorites();
+//               }
            } else if (CMDCYCLEREPEAT.equals(cmd) || CYCLEREPEAT_ACTION.equals(action)) {
                cycleRepeat();
            } else if (CMDTOGGLESHUFFLE.equals(cmd) || TOGGLESHUFFLE_ACTION.equals(action)) {
                toggleShuffle();
-           } else if (AppWidget42.CMDAPPWIDGETUPDATE.equals(cmd)) {
-               int[] appWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
-               mAppWidgetProvider4x2.performUpdate(MusicService.this, appWidgetIds);
-           } else if (AppWidget41.CMDAPPWIDGETUPDATE.equals(cmd)) {
-               int[] appWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
-               mAppWidgetProvider4x1.performUpdate(MusicService.this, appWidgetIds);
-           } else if (AppWidget11.CMDAPPWIDGETUPDATE.equals(cmd)) {
-               int[] appWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
-               mAppWidgetProvider1x1.performUpdate(MusicService.this, appWidgetIds);
+//           } else if (AppWidget42.CMDAPPWIDGETUPDATE.equals(cmd)) {
+//               int[] appWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
+//               mAppWidgetProvider4x2.performUpdate(MusicService.this, appWidgetIds);
+//           } else if (AppWidget41.CMDAPPWIDGETUPDATE.equals(cmd)) {
+//               int[] appWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
+//               mAppWidgetProvider4x1.performUpdate(MusicService.this, appWidgetIds);
+//           } else if (AppWidget11.CMDAPPWIDGETUPDATE.equals(cmd)) {
+//               int[] appWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
+//               mAppWidgetProvider1x1.performUpdate(MusicService.this, appWidgetIds);
            }
        }
    };
@@ -450,7 +456,7 @@ public class MusicService{
                | RemoteControlClient.FLAG_KEY_MEDIA_STOP;
        mRemoteControlClient.setTransportControlFlags(flags);
 
-       mPreferences = getSharedPreferences(APOLLO_PREFERENCES, MODE_WORLD_READABLE
+       mPreferences = getSharedPreferences(Constants.SD_PREFERENCES, MODE_WORLD_READABLE
                | MODE_WORLD_WRITEABLE);
        mCardId = MusicUtils.getCardId(this);
 
@@ -794,12 +800,12 @@ public class MusicService{
                }
                mPausedByTransientLossOfFocus = false;
                seek(0);
-           } else if (CMDTOGGLEFAVORITE.equals(cmd)) {
-               if (!isFavorite()) {
-                   addToFavorites();
-               } else {
-                   removeFromFavorites();
-               }
+//           } else if (CMDTOGGLEFAVORITE.equals(cmd)) {
+//               if (!isFavorite()) {
+//                   addToFavorites();
+//               } else {
+//                   removeFromFavorites();
+//               }
            } else if (CMDCYCLEREPEAT.equals(cmd) || CYCLEREPEAT_ACTION.equals(action)) {
                cycleRepeat();
            } else if (CMDTOGGLESHUFFLE.equals(cmd) || TOGGLESHUFFLE_ACTION.equals(action)) {
@@ -860,11 +866,11 @@ public class MusicService{
        }
    };
 
-   *//**
+   /**
     * Called when we receive a ACTION_MEDIA_EJECT notification.
     * 
     * @param storagePath path to mount point for the removed media
-    *//*
+    */
    public void closeExternalStorageFiles(String storagePath) {
        // stop playback and clean up if the SD card is going to be unmounted.
        stop(true);
@@ -872,12 +878,12 @@ public class MusicService{
        notifyChange(META_CHANGED);
    }
 
-   *//**
+   /**
     * Registers an intent to listen for ACTION_MEDIA_EJECT notifications. The
     * intent will call closeExternalStorageFiles() if the external media is
     * going to be ejected, so applications can clean up any files they have
     * open.
-    *//*
+    */
    public void registerExternalStorageListener() {
        if (mUnmountReceiver == null) {
            mUnmountReceiver = new BroadcastReceiver() {
@@ -901,12 +907,12 @@ public class MusicService{
            IntentFilter iFilter = new IntentFilter();
            iFilter.addAction(Intent.ACTION_MEDIA_EJECT);
            iFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
-           iFilter.addDataScheme(DATA_SCHEME);
+           iFilter.addDataScheme(Constants.DATA_SCHEME);
            registerReceiver(mUnmountReceiver, iFilter);
        }
    }
 
-   *//**
+   /**
     * Notify the change-receivers that something has changed. The intent that
     * is sent contains the following data for the currently playing track: "id"
     * - Integer: the database row ID "artist" - String: the name of the artist
@@ -918,7 +924,7 @@ public class MusicService{
     * playback queue has changed, that playback has stopped because the last
     * file in the list has been played, or that the play-state changed
     * (paused/resumed).
-    *//*
+    */
    public void notifyChange(String what) {
 
        Intent i = new Intent(what);
@@ -927,11 +933,11 @@ public class MusicService{
        i.putExtra("album", getAlbumName());
        i.putExtra("track", getTrackName());
        i.putExtra("playing", mIsSupposedToBePlaying);
-       i.putExtra("isfavorite", isFavorite());
+//       i.putExtra("isfavorite", isFavorite());
        sendStickyBroadcast(i);
 
        i = new Intent(i);
-       i.setAction(what.replace(APOLLO_PACKAGE_NAME, MUSIC_PACKAGE_NAME));
+       i.setAction(what.replace(SDMUSIC_PACKAGE_NAME, MUSIC_PACKAGE_NAME));
        sendStickyBroadcast(i);
 
        if (what.equals(PLAYSTATE_CHANGED)) {
@@ -956,9 +962,9 @@ public class MusicService{
        } else {
            saveQueue(false);
        }
-       mAppWidgetProvider1x1.notifyChange(this, what);
-       mAppWidgetProvider4x1.notifyChange(this, what);
-       mAppWidgetProvider4x2.notifyChange(this, what);
+//       mAppWidgetProvider1x1.notifyChange(this, what);
+//       mAppWidgetProvider4x1.notifyChange(this, what);
+//       mAppWidgetProvider4x2.notifyChange(this, what);
 
    }
 
@@ -1009,14 +1015,14 @@ public class MusicService{
        }
    }
 
-   *//**
+   /**
     * Appends a list of tracks to the current playlist. If nothing is playing
     * currently, playback will be started at the first track. If the action is
     * NOW, playback will switch to the first of the new tracks immediately.
     * 
     * @param list The list of tracks to append.
     * @param action NOW, NEXT or LAST
-    *//*
+    */
    public void enqueue(long[] list, int action) {
        synchronized (this) {
            if (action == NEXT && mPlayPos + 1 < mPlayListLen) {
@@ -1044,13 +1050,13 @@ public class MusicService{
        }
    }
 
-   *//**
+   /**
     * Replaces the current playlist with a new list, and prepares for starting
     * playback at the specified position in the list, or a random position if
     * the specified position is 0.
     * 
     * @param list The new list of tracks.
-    *//*
+    */
    public void open(long[] list, int position) {
        synchronized (this) {
            long oldId = getAudioId();
@@ -1085,12 +1091,12 @@ public class MusicService{
        }
    }
 
-   *//**
+   /**
     * Returns the current play list
     * 
     * @return An array of integers containing the IDs of the tracks in the play
     *         list
-    *//*
+    */
    public long[] getQueue() {
        synchronized (this) {
            int len = mPlayListLen;
@@ -1133,7 +1139,7 @@ public class MusicService{
                if (mOpenFailedCounter++ < 10 &&  mPlayListLen > 1) {
                    int pos = getNextPosition(false);
                    if (pos < 0) {
-                       gotoIdleState();
+//                       gotoIdleState();
                        if (mIsSupposedToBePlaying) {
                            mIsSupposedToBePlaying = false;
                            notifyChange(PLAYSTATE_CHANGED);
@@ -1173,11 +1179,11 @@ public class MusicService{
        }
    }
 
-   *//**
+   /**
     * Opens the specified file and readies it for playback.
     * 
     * @param path The full path of the file to be opened.
-    *//*
+    */
    public boolean open(String path) {
        synchronized (this) {
            if (path == null) {
@@ -1239,13 +1245,13 @@ public class MusicService{
        }
    }
 
-   *//**
+   /**
     * Method that query the media database for search a path an translate
     * to the internal media id
     *
     * @param path The path to search
     * @return long The id of the resource, or -1 if not found
-    *//*
+    */
    public long getIdFromPath(String path) {
        try {
            // Remove schema for search in the database
@@ -1281,9 +1287,9 @@ public class MusicService{
        return -1;
    }
 
-   *//**
+   /**
     * Starts playback of a previously opened file.
-    *//*
+    */
    public void play() {
        mAudioManager.requestAudioFocus(mAudioFocusListener, AudioManager.STREAM_MUSIC,
                AudioManager.AUDIOFOCUS_GAIN);
@@ -1300,7 +1306,7 @@ public class MusicService{
            mMediaplayerHandler.removeMessages(FADEDOWN);
            mMediaplayerHandler.sendEmptyMessage(FADEUP);
 
-           updateNotification();
+           //updateNotification();
            if (!mIsSupposedToBePlaying) {
                mIsSupposedToBePlaying = true;
                notifyChange(PLAYSTATE_CHANGED);
@@ -1313,83 +1319,83 @@ public class MusicService{
        }
    }
 
-   private void updateNotification() {
-       Bitmap b = getAlbumBitmap();
-       RemoteViews views = new RemoteViews(getPackageName(), R.layout.status_bar);
-       RemoteViews bigViews = new RemoteViews(getPackageName(), R.layout.status_bar_expanded);
-       
-       if (b != null) {
-           views.setViewVisibility(R.id.status_bar_icon, View.GONE);
-           views.setViewVisibility(R.id.status_bar_album_art, View.VISIBLE);
-           views.setImageViewBitmap(R.id.status_bar_album_art, b);
-           bigViews.setImageViewBitmap(R.id.status_bar_album_art, b);
-       } else {
-           views.setViewVisibility(R.id.status_bar_icon, View.VISIBLE);
-           views.setViewVisibility(R.id.status_bar_album_art, View.GONE);
-       }
-       
-       ComponentName rec = new ComponentName(getPackageName(),
-               MediaButtonIntentReceiver.class.getName());
-       Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
-       mediaButtonIntent.putExtra(CMDNOTIF, 1);
-       mediaButtonIntent.setComponent(rec);
-       KeyEvent mediaKey = new KeyEvent(KeyEvent.ACTION_DOWN,
-               KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE);
-       mediaButtonIntent.putExtra(Intent.EXTRA_KEY_EVENT, mediaKey);
-       PendingIntent mediaPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),
-               1, mediaButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-       views.setOnClickPendingIntent(R.id.status_bar_play, mediaPendingIntent);
-       bigViews.setOnClickPendingIntent(R.id.status_bar_play, mediaPendingIntent);
-       
-       mediaButtonIntent.putExtra(CMDNOTIF, 2);
-       mediaKey = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT);
-       mediaButtonIntent.putExtra(Intent.EXTRA_KEY_EVENT, mediaKey);
-       mediaPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 2,
-               mediaButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-       
-       views.setOnClickPendingIntent(R.id.status_bar_next, mediaPendingIntent);
-       bigViews.setOnClickPendingIntent(R.id.status_bar_next, mediaPendingIntent);
-
-       mediaButtonIntent.putExtra(CMDNOTIF, 4);
-       mediaKey = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS);
-       mediaButtonIntent.putExtra(Intent.EXTRA_KEY_EVENT, mediaKey);
-       mediaPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 4,
-               mediaButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-       
-       bigViews.setOnClickPendingIntent(R.id.status_bar_prev, mediaPendingIntent);
-       
-       mediaButtonIntent.putExtra(CMDNOTIF, 3);
-       mediaKey = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_STOP);
-       mediaButtonIntent.putExtra(Intent.EXTRA_KEY_EVENT, mediaKey);
-       mediaPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 3,
-               mediaButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-       views.setOnClickPendingIntent(R.id.status_bar_collapse, mediaPendingIntent);
-       bigViews.setOnClickPendingIntent(R.id.status_bar_collapse, mediaPendingIntent);
-       
-       views.setImageViewResource(R.id.status_bar_play, R.drawable.apollo_holo_dark_pause);
-       bigViews.setImageViewResource(R.id.status_bar_play, R.drawable.apollo_holo_dark_pause);
-
-       views.setTextViewText(R.id.status_bar_track_name, getTrackName());
-       bigViews.setTextViewText(R.id.status_bar_track_name, getTrackName());
-       
-       views.setTextViewText(R.id.status_bar_artist_name, getArtistName());
-       bigViews.setTextViewText(R.id.status_bar_artist_name, getArtistName());
-       
-       bigViews.setTextViewText(R.id.status_bar_album_name, getAlbumName());
-       
-       status = new Notification.Builder(this).build();
-       status.contentView = views;
-       status.bigContentView = bigViews;
-       status.flags = Notification.FLAG_ONGOING_EVENT;
-       status.icon = R.drawable.stat_notify_music;
-       status.contentIntent = PendingIntent
-               .getActivity(this, 0, new Intent("com.andrew.apolloMod.PLAYBACK_VIEWER")
-                       .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                       .putExtra("started_from", "NOTIF_SERVICE"), PendingIntent.FLAG_CANCEL_CURRENT);
-       startForeground(PLAYBACKSERVICE_STATUS, status);
-   }
+//   private void updateNotification() {
+//       Bitmap b = getAlbumBitmap();
+//       RemoteViews views = new RemoteViews(getPackageName(), R.layout.status_bar);
+//       RemoteViews bigViews = new RemoteViews(getPackageName(), R.layout.status_bar_expanded);
+//       
+//       if (b != null) {
+//           views.setViewVisibility(R.id.status_bar_icon, View.GONE);
+//           views.setViewVisibility(R.id.status_bar_album_art, View.VISIBLE);
+//           views.setImageViewBitmap(R.id.status_bar_album_art, b);
+//           bigViews.setImageViewBitmap(R.id.status_bar_album_art, b);
+//       } else {
+//           views.setViewVisibility(R.id.status_bar_icon, View.VISIBLE);
+//           views.setViewVisibility(R.id.status_bar_album_art, View.GONE);
+//       }
+//       
+//       ComponentName rec = new ComponentName(getPackageName(),
+//               MediaButtonIntentReceiver.class.getName());
+//       Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
+//       mediaButtonIntent.putExtra(CMDNOTIF, 1);
+//       mediaButtonIntent.setComponent(rec);
+//       KeyEvent mediaKey = new KeyEvent(KeyEvent.ACTION_DOWN,
+//               KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE);
+//       mediaButtonIntent.putExtra(Intent.EXTRA_KEY_EVENT, mediaKey);
+//       PendingIntent mediaPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),
+//               1, mediaButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//       views.setOnClickPendingIntent(R.id.status_bar_play, mediaPendingIntent);
+//       bigViews.setOnClickPendingIntent(R.id.status_bar_play, mediaPendingIntent);
+//       
+//       mediaButtonIntent.putExtra(CMDNOTIF, 2);
+//       mediaKey = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT);
+//       mediaButtonIntent.putExtra(Intent.EXTRA_KEY_EVENT, mediaKey);
+//       mediaPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 2,
+//               mediaButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//       
+//       views.setOnClickPendingIntent(R.id.status_bar_next, mediaPendingIntent);
+//       bigViews.setOnClickPendingIntent(R.id.status_bar_next, mediaPendingIntent);
+//
+//       mediaButtonIntent.putExtra(CMDNOTIF, 4);
+//       mediaKey = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS);
+//       mediaButtonIntent.putExtra(Intent.EXTRA_KEY_EVENT, mediaKey);
+//       mediaPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 4,
+//               mediaButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//       
+//       bigViews.setOnClickPendingIntent(R.id.status_bar_prev, mediaPendingIntent);
+//       
+//       mediaButtonIntent.putExtra(CMDNOTIF, 3);
+//       mediaKey = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_STOP);
+//       mediaButtonIntent.putExtra(Intent.EXTRA_KEY_EVENT, mediaKey);
+//       mediaPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 3,
+//               mediaButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//       views.setOnClickPendingIntent(R.id.status_bar_collapse, mediaPendingIntent);
+//       bigViews.setOnClickPendingIntent(R.id.status_bar_collapse, mediaPendingIntent);
+//       
+//       views.setImageViewResource(R.id.status_bar_play, R.drawable.apollo_holo_dark_pause);
+//       bigViews.setImageViewResource(R.id.status_bar_play, R.drawable.apollo_holo_dark_pause);
+//
+//       views.setTextViewText(R.id.status_bar_track_name, getTrackName());
+//       bigViews.setTextViewText(R.id.status_bar_track_name, getTrackName());
+//       
+//       views.setTextViewText(R.id.status_bar_artist_name, getArtistName());
+//       bigViews.setTextViewText(R.id.status_bar_artist_name, getArtistName());
+//       
+//       bigViews.setTextViewText(R.id.status_bar_album_name, getAlbumName());
+//       
+//       status = new Notification.Builder(this).build();
+//       status.contentView = views;
+//       status.bigContentView = bigViews;
+//       status.flags = Notification.FLAG_ONGOING_EVENT;
+//       status.icon = R.drawable.stat_notify_music;
+//       status.contentIntent = PendingIntent
+//               .getActivity(this, 0, new Intent("com.andrew.apolloMod.PLAYBACK_VIEWER")
+//                       .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//                       .putExtra("started_from", "NOTIF_SERVICE"), PendingIntent.FLAG_CANCEL_CURRENT);
+//       startForeground(PLAYBACKSERVICE_STATUS, status);
+//   }
    
    private void stop(boolean remove_status_icon) {
        if (mPlayer.isInitialized()) {
@@ -1402,7 +1408,7 @@ public class MusicService{
            updateAlbumBitmap();
        }
        if (remove_status_icon) {
-           gotoIdleState();
+//           gotoIdleState();
        } else {
            stopForeground(false);
        }
@@ -1411,22 +1417,22 @@ public class MusicService{
        }
    }
 
-   *//**
+   /**
     * Stops playback.
-    *//*
+    */
    public void stop() {
        stop(true);
    }
 
-   *//**
+   /**
     * Pauses playback (call play() to resume)
-    *//*
+    */
    public void pause() {
        synchronized (this) {
            mMediaplayerHandler.removeMessages(FADEUP);
            if (mIsSupposedToBePlaying) {
                mPlayer.pause();
-               gotoIdleState();
+//               gotoIdleState();
                mIsSupposedToBePlaying = false;
                notifyChange(PLAYSTATE_CHANGED);
                saveBookmarkIfNeeded();
@@ -1434,17 +1440,17 @@ public class MusicService{
        }
    }
 
-   *//**
+   /**
     * Returns whether something is currently playing
     * 
     * @return true if something is playing (or will be playing shortly, in case
     *         we're currently transitioning between tracks), false if not.
-    *//*
+    */
    public boolean isPlaying() {
        return mIsSupposedToBePlaying;
    }
 
-   
+   /**
     * Desired behavior for prev/next/shuffle: - NEXT will move to the next
     * track in the list when not shuffling, and to a track randomly picked from
     * the not-yet-played tracks when shuffling. If all tracks have already been
@@ -1462,7 +1468,7 @@ public class MusicService{
     * 9-6-10-8-5-4-3-2. If the user then hits 'next', a random track will be
     * picked again. If at any time user disables shuffling the next/previous
     * track will be picked in sequential order again.
-    
+    */
 
    public void prev() {
        synchronized (this) {
@@ -1491,12 +1497,12 @@ public class MusicService{
        }
    }
 
-   *//**
+   /**
     * Get the next position to play. Note that this may actually modify mPlayPos
     * if playback is in SHUFFLE_AUTO mode and the shuffle list window needed to
     * be adjusted. Either way, the return value is the next value that should be
     * assigned to mPlayPos;
-    *//*
+    */
    private int getNextPosition(boolean force) {
        if (mRepeatMode == REPEAT_CURRENT) {
            if (mPlayPos < 0) return 0;
@@ -1583,7 +1589,7 @@ public class MusicService{
 
            int pos = getNextPosition(force);
            if (pos < 0) {
-               gotoIdleState();
+//               gotoIdleState();
                if (mIsSupposedToBePlaying) {
                    mIsSupposedToBePlaying = false;
                    notifyChange(PLAYSTATE_CHANGED);
@@ -1628,7 +1634,7 @@ public class MusicService{
        }
    }
 
-   private void gotoIdleState() {
+/*   private void gotoIdleState() {
        mDelayedStopHandler.removeCallbacksAndMessages(null);
        Message msg = mDelayedStopHandler.obtainMessage();
        mDelayedStopHandler.sendMessageDelayed(msg, IDLE_DELAY);
@@ -1643,7 +1649,7 @@ public class MusicService{
            NotificationManager mManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
            mManager.notify(PLAYBACKSERVICE_STATUS, status);
        }
-   }
+   }*/
 
    private void saveBookmarkIfNeeded() {
        try {
@@ -1778,7 +1784,7 @@ public class MusicService{
        return false;
    }
 
-   *//**
+   /**
     * Removes the range of tracks specified from the play list. If a file
     * within the range is the file currently being played, playback will move
     * to the next file after the range.
@@ -1786,7 +1792,7 @@ public class MusicService{
     * @param first The first file to be removed
     * @param last The last file to be removed
     * @return the number of tracks deleted
-    *//*
+    */
    public int removeTracks(int first, int last) {
        int numremoved = removeTracksInternal(first, last);
        if (numremoved > 0) {
@@ -1796,12 +1802,12 @@ public class MusicService{
    }
 
 
-   *//**
+   /**
     * Moves an item in the queue from one position to another
     *
     * @param from The position the item is currently at
     * @param to The position the item is being moved to
-    *//*
+    */
    public void moveQueueItem(int index1, int index2) {
        synchronized (this) {
            if (index1 >= mPlayListLen) {
@@ -1898,12 +1904,12 @@ public class MusicService{
    	}
 
        ImageInfo mInfo = new ImageInfo();
-       mInfo.type = TYPE_ALBUM;
-       mInfo.size = SIZE_THUMB;
-       mInfo.source = SRC_FIRST_AVAILABLE;
+       mInfo.type = Constants.TYPE_ALBUM;
+       mInfo.size = Constants.SIZE_THUMB;
+       mInfo.source = Constants.SRC_FIRST_AVAILABLE;
        mInfo.data = new String[]{ String.valueOf(getAlbumId()), getArtistName(), getAlbumName() };
 
-       String tag = ImageUtils.createShortTag( mInfo ) + SIZE_THUMB ;
+       String tag = ImageUtils.createShortTag( mInfo ) + Constants.SIZE_THUMB ;
        if (tag == mAlbumBitmapTag)
            return;
 
@@ -1928,17 +1934,17 @@ public class MusicService{
        }
        notifyChange(META_CHANGED);
        if (status != null)
-       	updateNotification();
+       	//updateNotification();
 
        mAlbumBitmapTask = null;
    }
 
-   *//**
+   /**
     * Removes all instances of the track with the given id from the playlist.
     * 
     * @param id The id to be removed
     * @return how many instances of the track were removed
-    *//*
+    */
    public int removeTrack(long id) {
        int numremoved = 0;
        synchronized (this) {
@@ -2001,18 +2007,18 @@ public class MusicService{
        return mMediaMountedCount;
    }
 
-   *//**
+   /**
     * Returns the path of the currently playing file, or null if no file is
     * currently playing.
-    *//*
+    */
    public String getPath() {
        return mFileToPlay;
    }
 
-   *//**
+   /**
     * Returns the rowid of the currently playing file, or -1 if no file is
     * currently playing.
-    *//*
+    */
    public long getAudioId() {
        synchronized (this) {
            if (mPlayPos >= 0 && mPlayer.isInitialized()) {
@@ -2022,22 +2028,22 @@ public class MusicService{
        return -1;
    }
 
-   *//**
+   /**
     * Returns the position in the queue
     * 
     * @return the position in the queue
-    *//*
+    */
    public int getQueuePosition() {
        synchronized (this) {
            return mPlayPos;
        }
    }
 
-   *//**
+   /**
     * Starts playing the track at the given position in the queue.
     * 
     * @param pos The position in the queue of the track that will be played.
-    *//*
+    */
    public void setQueuePosition(int pos) {
        synchronized (this) {
            stop(false);
@@ -2118,10 +2124,10 @@ public class MusicService{
        }
    }
 
-   *//**
+   /**
     * Returns the duration of the file in milliseconds. Currently this method
     * returns -1 for the duration of MIDI files.
-    *//*
+    */
    public long duration() {
        if (mPlayer.isInitialized()) {
            return mPlayer.duration();
@@ -2129,9 +2135,9 @@ public class MusicService{
        return -1;
    }
 
-   *//**
+   /**
     * Returns the current playback position in milliseconds
-    *//*
+    */
    public long position() {
        if (mPlayer.isInitialized()) {
            return mPlayer.position();
@@ -2139,11 +2145,11 @@ public class MusicService{
        return -1;
    }
 
-   *//**
+   /**
     * Seeks to the position specified.
     * 
     * @param pos The position to seek to, in milliseconds
-    *//*
+    */
    public long seek(long pos) {
        if (mPlayer.isInitialized()) {
            if (pos < 0)
@@ -2155,27 +2161,27 @@ public class MusicService{
        return -1;
    }
 
-   *//**
+   /**
     * Sets the audio session ID.
     * 
     * @param sessionId: the audio session ID.
-    *//*
+    */
    public void setAudioSessionId(int sessionId) {
        synchronized (this) {
            mPlayer.setAudioSessionId(sessionId);
        }
    }
 
-   *//**
+   /**
     * Returns the audio session ID.
-    *//*
+    */
    public int getAudioSessionId() {
        synchronized (this) {
            return mPlayer.getAudioSessionId();
        }
    }
 
-   public void toggleFavorite() {
+/*   public void toggleFavorite() {
        if (!isFavorite()) {
            addToFavorites();
        } else {
@@ -2213,12 +2219,12 @@ public class MusicService{
    public void addToFavorites(long id) {
        MusicUtils.addToFavorites(this, id);
        notifyChange(FAVORITE_CHANGED);
-   }
+   }*/
 
-   *//**
+   /**
     * Provides a unified interface for dealing with midi files and other media
     * files.
-    *//*
+    */
    private class MultiPlayer {
        private MediaPlayer mCurrentMediaPlayer = new MediaPlayer();
        
@@ -2266,7 +2272,7 @@ public class MusicService{
    	    	MusicUtils.initEqualizer( player , getApplicationContext());
    	    }    	                                
            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-           String type = sp.getString(VISUALIZATION_TYPE, getResources().getString(R.string.visual_none));                    
+           String type = sp.getString(Constants.VISUALIZATION_TYPE, getResources().getString(R.string.visual_none));                    
    	    if(!type.equals(getResources().getString(R.string.visual_none))){
        	    VisualizerUtils.initVisualizer( player );
            }
@@ -2308,9 +2314,9 @@ public class MusicService{
            mIsInitialized = false;
        }
 
-       *//**
+       /**
         * You CANNOT use this player anymore after calling release()
-        *//*
+        */
        public void release() {
            stop();
            mCurrentMediaPlayer.release();
@@ -2398,12 +2404,12 @@ public class MusicService{
        }
    }
 
-   
+   /**
     * By making this a static class with a WeakReference to the Service, we
     * ensure that the Service can be GCd even when the system process still has
     * a remote reference to the stub.
-    
-   static class ServiceStub extends IApolloService.Stub {
+    */
+   static class ServiceStub extends IMusicService.Stub {
        WeakReference<MusicService> mService;
 
        ServiceStub(MusicService service) {
@@ -2575,22 +2581,23 @@ public class MusicService{
 
        @Override
        public void addToFavorites(long id) throws RemoteException {
-           mService.get().addToFavorites(id);
+           //mService.get().addToFavorites(id);
        }
 
        @Override
        public void removeFromFavorites(long id) throws RemoteException {
-           mService.get().removeFromFavorites(id);
+           //mService.get().removeFromFavorites(id);
        }
 
        @Override
        public boolean isFavorite(long id) throws RemoteException {
-           return mService.get().isFavorite(id);
+           //return mService.get().isFavorite(id);
+    	   return false;
        }
 
        @Override
        public void toggleFavorite() throws RemoteException {
-           mService.get().toggleFavorite();
+           //mService.get().toggleFavorite();
        }
        
        public void notifyChange(String what){
@@ -2602,4 +2609,3 @@ public class MusicService{
    private final IBinder mBinder = new ServiceStub(this);
 
 }
-*/

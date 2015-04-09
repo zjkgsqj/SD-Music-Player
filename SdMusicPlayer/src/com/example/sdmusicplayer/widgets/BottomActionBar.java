@@ -6,6 +6,9 @@ package com.example.sdmusicplayer.widgets;
 
 import com.example.sdmusicplayer.QuickQueue;
 import com.example.sdmusicplayer.R;
+import com.example.sdmusicplayer.helpers.utils.MusicUtils;
+import com.example.sdmusicplayer.info.ImageInfo;
+import com.example.sdmusicplayer.info.ImageProvider;
 import com.example.sdmusicplayer.utils.Constants;
 
 import android.app.Activity;
@@ -19,10 +22,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
-/**
- * @author Andrew Neal
- */
 public class BottomActionBar extends LinearLayout implements OnLongClickListener {
 	 
     public BottomActionBar(Context context) {
@@ -50,32 +49,27 @@ public class BottomActionBar extends LinearLayout implements OnLongClickListener
             return;
         }
 
-        /*if (MusicUtils.mService != null && MusicUtils.getCurrentAudioId() != -1) {
-
+        if (MusicUtils.mService != null && MusicUtils.getCurrentAudioId() != -1) {
             // Track name
             TextView mTrackName = (TextView)bottomActionBar
                     .findViewById(R.id.bottom_action_bar_track_name);
             mTrackName.setText(MusicUtils.getTrackName());
-
             // Artist name
             TextView mArtistName = (TextView)bottomActionBar
                     .findViewById(R.id.bottom_action_bar_artist_name);
             mArtistName.setText(MusicUtils.getArtistName());
-
             // Album art
             ImageView mAlbumArt = (ImageView)bottomActionBar
-                    .findViewById(R.id.bottom_action_bar_album_art);
-            
+                    .findViewById(R.id.bottom_action_bar_album_art);            
 
             ImageInfo mInfo = new ImageInfo();
             mInfo.type = Constants.TYPE_ALBUM;
             mInfo.size = Constants.SIZE_THUMB;
             mInfo.source = Constants.SRC_FIRST_AVAILABLE;
-            mInfo.data = new String[]{ String.valueOf(MusicUtils.getCurrentAlbumId()) , MusicUtils.getArtistName(), MusicUtils.getAlbumName() };
-            
+            mInfo.data = new String[]{ String.valueOf(MusicUtils.getCurrentAlbumId()) , MusicUtils.getArtistName(), MusicUtils.getAlbumName() };           
             ImageProvider.getInstance( activity ).loadImage( mAlbumArt , mInfo );
             
-        }*/
+        }
     }
 
     @Override

@@ -2,6 +2,8 @@
 package com.example.sdmusicplayer.fragments;
 
 import com.example.sdmusicplayer.R;
+import com.example.sdmusicplayer.helpers.utils.MusicUtils;
+import com.example.sdmusicplayer.service.MusicService;
 import com.example.sdmusicplayer.widgets.BottomActionBar;
 
 import android.animation.ObjectAnimator;
@@ -39,7 +41,7 @@ public class BottomActionBarFragment extends Fragment {
         
         
         mPrev = (ImageButton)root.findViewById(R.id.bottom_action_bar_previous);
-        /*mPrev.setOnClickListener(new OnClickListener() {
+        mPrev.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (MusicUtils.mService == null)
@@ -55,7 +57,7 @@ public class BottomActionBarFragment extends Fragment {
                     ex.printStackTrace();
                 }
             }
-        });*/
+        });
 
         mPlay = (ImageButton)root.findViewById(R.id.bottom_action_bar_play);
         mPlay.setOnClickListener(new OnClickListener() {
@@ -66,7 +68,7 @@ public class BottomActionBarFragment extends Fragment {
         });
 
         mNext = (ImageButton)root.findViewById(R.id.bottom_action_bar_next);
-        /*mNext.setOnClickListener(new OnClickListener() {
+        mNext.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (MusicUtils.mService == null)
@@ -77,7 +79,7 @@ public class BottomActionBarFragment extends Fragment {
                     ex.printStackTrace();
                 }
             }
-        });*/
+        });
         return root;
     }
 
@@ -99,8 +101,8 @@ public class BottomActionBarFragment extends Fragment {
     public void onStart() {
         super.onStart();
         IntentFilter filter = new IntentFilter();
-        /*filter.addAction(ApolloService.PLAYSTATE_CHANGED);
-        filter.addAction(ApolloService.META_CHANGED);*/
+        filter.addAction(MusicService.PLAYSTATE_CHANGED);
+        filter.addAction(MusicService.META_CHANGED);
         getActivity().registerReceiver(mMediaStatusReceiver, filter);
     }
 
@@ -114,7 +116,7 @@ public class BottomActionBarFragment extends Fragment {
      * Play and pause music
      */
     private void doPauseResume() {
-        /*try {
+        try {
             if (MusicUtils.mService != null) {
                 if (MusicUtils.mService.isPlaying()) {
                     MusicUtils.mService.pause();
@@ -125,7 +127,7 @@ public class BottomActionBarFragment extends Fragment {
             setPauseButtonImage();
         } catch (RemoteException ex) {
             ex.printStackTrace();
-        }*/
+        }
     }
 
     public void onCollapsed(){
@@ -167,7 +169,7 @@ public class BottomActionBarFragment extends Fragment {
      * Set the play and pause image
      */
     private void setPauseButtonImage() {
-        /*try {
+        try {
             if (MusicUtils.mService != null && MusicUtils.mService.isPlaying()) {
                 mPlay.setImageResource(R.drawable.apollo_holo_light_pause);
             } else {
@@ -175,19 +177,18 @@ public class BottomActionBarFragment extends Fragment {
             }
         } catch (RemoteException ex) {
             ex.printStackTrace();
-        }*/
+        }
     }
 
 	public void setUpQueueSwitch(Activity activity) {
-		// TODO Auto-generated method stub
 		albumArt = (RelativeLayout) activity.findViewById(R.id.audio_player_album_art_wrapper);
         listQueue = (RelativeLayout) activity.findViewById(R.id.audio_player_queue_wrapper);
-        /*mQueue.setOnClickListener(new OnClickListener() {
+        mQueue.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
             	if(albumArt.getVisibility()==View.VISIBLE){
             		listQueue.removeAllViews();
-            		getFragmentManager().beginTransaction().add(R.id.audio_player_queue_wrapper, new NowPlayingFragment(), "NowPlayingTag").commit();
+            		//getFragmentManager().beginTransaction().add(R.id.audio_player_queue_wrapper, new NowPlayingFragment(), "NowPlayingTag").commit();
             		mQueue.setImageResource(R.drawable.btn_switch_queue_active);
                     albumArt.setVisibility(View.GONE);
                     listQueue.setVisibility(View.VISIBLE);
@@ -207,7 +208,7 @@ public class BottomActionBarFragment extends Fragment {
             	}
             	
             }
-        });*/
+        });
 		
 	}
 }

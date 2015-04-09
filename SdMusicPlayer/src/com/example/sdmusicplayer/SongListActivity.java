@@ -14,9 +14,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+
 import com.example.sdmusicplayer.adapters.base.ListViewAdapter;
 import com.example.sdmusicplayer.fragments.BottomActionBarFragment;
+import com.example.sdmusicplayer.helpers.utils.MusicUtils;
+import com.example.sdmusicplayer.service.aidl.IMusicService;
 import com.example.sdmusicplayer.utils.Utils;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelSlideListener;
@@ -77,12 +82,6 @@ public class SongListActivity extends FragmentActivity implements ServiceConnect
 			public void onPanelHidden(View panel) {
 			}
 		});
-		initActionBar();
-		mCursor = getAllSongs();
-		mListView = (ListView) findViewById(R.id.songList);
-		mAdapter =new ListViewAdapter(this, R.layout.listview_song_item, mCursor,
-				new String[] {}, new int[] {}, 0);
-		mListView.setAdapter(mAdapter);
 
 		String startedFrom = getIntent().getStringExtra("started_from");
 		if(startedFrom!=null){
@@ -97,7 +96,9 @@ public class SongListActivity extends FragmentActivity implements ServiceConnect
 				}
 			});
 		}
-
+		
+		initActionBar();
+		initSongList();		
 	}
 
 	@Override
@@ -125,33 +126,38 @@ public class SongListActivity extends FragmentActivity implements ServiceConnect
 	private void initActionBar() {
 		Utils.showUpTitleOnly(getActionBar());
 	}
-
-	@Override
-	public void onServiceConnected(ComponentName arg0, IBinder arg1) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onServiceDisconnected(ComponentName arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	private Cursor getAllSongs() {
-		if(mCursor!=null)
-		{
-			return mCursor; 
+	
+	private void initSongList() {
+		if(mCursor==null){
+			ContentResolver resolver = getContentResolver();
+			mCursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+					null, null, null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
 		}
-		ContentResolver resolver=getContentResolver();//获取ContentResolver对象
-		mCursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-				null, null, null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
-		return mCursor;
+		mListView = (ListView) findViewById(R.id.songList);
+		mAdapter =new ListViewAdapter(this, R.layout.listview_song_item, mCursor,
+				new String[] {}, new int[] {}, 0);
+		mListView.setAdapter(mAdapter);
+		mListView.setOnItemClickListener(new OnItemClickListener(){
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+					long id) {
+				MusicUtils.playAll(SongListActivity.this, mCursor, position-1);				
+			}			
+		});
+	}
+
+	@Override
+	public void onServiceConnected(ComponentName name, IBinder obj) {
+		MusicUtils.mService = IMusicService.Stub.asInterface(obj);
+	}
+
+	@Override
+	public void onServiceDisconnected(ComponentName name) {
+		MusicUtils.mService = null;
 	}
 
 	@Override
 	public void onBackPressed() {
-		//super.onBackPressed();
 		if (mPanel != null &&
 				(mPanel.getPanelState() == PanelState.EXPANDED || mPanel.getPanelState() == PanelState.ANCHORED)) {
 			mPanel.setPanelState(PanelState.COLLAPSED);

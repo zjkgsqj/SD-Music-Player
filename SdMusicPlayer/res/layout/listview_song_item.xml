@@ -22,8 +22,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_margin="@dimen/listview_album_margin"
+        android:paddingTop="@dimen/listview_items_padding_top_bottom"
         android:gravity="center|right"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:textSize="@dimen/text_size_micro" />
 
     <!-- Padding may be set on via code for some tabs -->
 
@@ -32,8 +34,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@+id/listview_item_duration"
-        android:ellipsize="marquee"
-        android:maxLength="29"
+        android:ellipsize="end"
+        android:maxLength="36"
         android:paddingLeft="@dimen/listview_items_padding_left_top"
         android:paddingRight="@dimen/listview_items_padding_right"
         android:paddingTop="@dimen/listview_items_padding_top_bottom"
@@ -51,6 +53,6 @@
         android:paddingRight="@dimen/listview_items_padding_right"
         android:paddingTop="@dimen/listview_items_padding_small_top"
         android:singleLine="true"
-        android:textSize="@dimen/text_size_small" />
+        android:textSize="@dimen/text_size_micro" />
 
 </RelativeLayout>
