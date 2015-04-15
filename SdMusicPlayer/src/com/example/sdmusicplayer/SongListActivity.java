@@ -2,6 +2,7 @@ package com.example.sdmusicplayer;
 
 import android.content.ComponentName;
 import android.content.ContentResolver;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
@@ -21,6 +22,8 @@ import android.widget.ListView;
 import com.example.sdmusicplayer.adapters.base.ListViewAdapter;
 import com.example.sdmusicplayer.fragments.BottomActionBarFragment;
 import com.example.sdmusicplayer.helpers.utils.MusicUtils;
+import com.example.sdmusicplayer.service.MusicService;
+import com.example.sdmusicplayer.service.ServiceToken;
 import com.example.sdmusicplayer.service.aidl.IMusicService;
 import com.example.sdmusicplayer.utils.Utils;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -29,6 +32,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
 
 public class SongListActivity extends FragmentActivity implements ServiceConnection{
 
+	private ServiceToken mToken;
 	private SlidingUpPanelLayout mPanel;
 	public static final String SAVED_STATE_ACTION_BAR_HIDDEN = "saved_state_action_bar_hidden";
 	private BottomActionBarFragment mBActionbar;
@@ -141,7 +145,7 @@ public class SongListActivity extends FragmentActivity implements ServiceConnect
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 					long id) {
-				MusicUtils.playAll(SongListActivity.this, mCursor, position-1);				
+				MusicUtils.playAll(SongListActivity.this, mCursor, position);				
 			}			
 		});
 	}
@@ -155,6 +159,32 @@ public class SongListActivity extends FragmentActivity implements ServiceConnect
 	public void onServiceDisconnected(ComponentName name) {
 		MusicUtils.mService = null;
 	}
+
+    @Override
+    protected void onStart() {
+        // Bind to Service
+        mToken = MusicUtils.bindToService(this, this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(MusicService.META_CHANGED);
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        // Unbind
+        if (MusicUtils.mService != null)
+            MusicUtils.unbindFromService(mToken);
+        //TODO: clear image cache
+        super.onStop();
+    }
+    
+    @Override
+    protected void onDestroy() { 
+    	if (mAdapter != null && mAdapter.getCursor() != null) {
+            mAdapter.getCursor().close();  
+        }
+    	super.onDestroy();   
+    }
 
 	@Override
 	public void onBackPressed() {

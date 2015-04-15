@@ -6,6 +6,7 @@ import java.util.Set;
 
 import android.app.ActionBar;
 import android.content.ComponentName;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -28,6 +29,8 @@ import com.example.sdmusicplayer.fragments.albumFragment;
 import com.example.sdmusicplayer.fragments.artistFragment;
 import com.example.sdmusicplayer.fragments.folderFragment;
 import com.example.sdmusicplayer.helpers.utils.MusicUtils;
+import com.example.sdmusicplayer.service.MusicService;
+import com.example.sdmusicplayer.service.ServiceToken;
 import com.example.sdmusicplayer.service.aidl.IMusicService;
 import com.example.sdmusicplayer.utils.Utils;
 import com.example.sdmusicplayer.widgets.ScrollableTabView;
@@ -38,13 +41,10 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
 public class MainActivity extends FragmentActivity implements ServiceConnection{
 
 	ViewPager mViewPager;
-
-    private SlidingUpPanelLayout mPanel;
-    
-	public static final String SAVED_STATE_ACTION_BAR_HIDDEN = "saved_state_action_bar_hidden";
-    
-	BottomActionBarFragment mBActionbar;
-    
+	private ServiceToken mToken;
+    private SlidingUpPanelLayout mPanel;   
+	public static final String SAVED_STATE_ACTION_BAR_HIDDEN = "saved_state_action_bar_hidden";    
+	BottomActionBarFragment mBActionbar;   
 	private boolean isAlreadyStarted = false;
 	
 	@Override
@@ -209,6 +209,27 @@ public class MainActivity extends FragmentActivity implements ServiceConnection{
 	public void onServiceDisconnected(ComponentName name) {
 		MusicUtils.mService = null;
 	}
+	
+    @Override
+    protected void onStart() {
+
+        // Bind to Service
+        mToken = MusicUtils.bindToService(this, this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(MusicService.META_CHANGED);
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        // Unbind
+        if (MusicUtils.mService != null)
+            MusicUtils.unbindFromService(mToken);
+
+        //TODO: clear image cache
+
+        super.onStop();
+    }
 	
 	@Override
     public void onBackPressed() {

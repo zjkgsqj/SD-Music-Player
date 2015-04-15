@@ -2,16 +2,23 @@ package com.example.sdmusicplayer.helpers.utils;
 
 import java.util.Arrays;
 import java.util.Formatter;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Random;
 
 import com.example.sdmusicplayer.R;
 import com.example.sdmusicplayer.service.MusicService;
+import com.example.sdmusicplayer.service.ServiceBinder;
+import com.example.sdmusicplayer.service.ServiceToken;
 import com.example.sdmusicplayer.service.aidl.IMusicService;
 import com.example.sdmusicplayer.utils.Constants;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.media.MediaPlayer;
@@ -29,11 +36,56 @@ public class MusicUtils {
     private static final Object[] sTimeArgs = new Object[5];
     private final static Formatter sFormatter = new Formatter(sFormatBuilder, Locale.getDefault());
     private final static long[] sEmptyList = new long[0];
-    
+    private static HashMap<Context, ServiceBinder> sConnectionMap = new HashMap<Context, ServiceBinder>();
     public static IMusicService mService = null;
     private static Equalizer mEqualizer = null;    
     private static BassBoost mBoost = null;
     
+    /**
+     * @param context
+     * @return
+     */
+    public static ServiceToken bindToService(Activity context) {
+        return bindToService(context, null);
+    }
+
+    /**
+     * @param context
+     * @param callback
+     * @return
+     */
+    public static ServiceToken bindToService(Context context, ServiceConnection callback) {
+        Activity realActivity = ((Activity)context).getParent();
+        if (realActivity == null) {
+            realActivity = (Activity)context;
+        }
+        ContextWrapper cw = new ContextWrapper(realActivity);
+        cw.startService(new Intent(cw, MusicService.class));
+        ServiceBinder sb = new ServiceBinder(callback);
+        if (cw.bindService((new Intent()).setClass(cw, MusicService.class), sb, 0)) {
+            sConnectionMap.put(cw, sb);
+            return new ServiceToken(cw);
+        }
+        return null;
+    }
+
+    /**
+     * @param token
+     */
+    public static void unbindFromService(ServiceToken token) {
+        if (token == null) {
+            return;
+        }
+        ContextWrapper cw = token.mWrappedContext;
+        ServiceBinder sb = sConnectionMap.remove(cw);
+        if (sb == null) {
+            return;
+        }
+        cw.unbindService(sb);
+        if (sConnectionMap.isEmpty()) {
+            mService = null;
+        }
+    }
 	
 	/**
 	 * 格式化播放时长
