@@ -148,5 +148,8 @@
     <dimen name="simple_eq_seek_vert_width">30dp</dimen>
     <dimen name="simple_eq_seek_vert_padding_right">10dp</dimen>
     <dimen name="simple_eq_seek_vert_padding_left">20dp</dimen>
+    
+    <!-- Half and half layout -->
+    <dimen name="half_and_half_image_height">130dp</dimen>
 
 </resources>

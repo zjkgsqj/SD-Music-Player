@@ -1,7 +1,9 @@
 package com.example.sdmusicplayer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import android.app.ActionBar;
@@ -13,16 +15,20 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 
-import com.example.sdmusicplayer.adapters.PagerAdapter;
 import com.example.sdmusicplayer.adapters.ScrollingTabsAdapter;
+import com.example.sdmusicplayer.fragments.AlbumsFragment;
 import com.example.sdmusicplayer.fragments.BottomActionBarFragment;
 import com.example.sdmusicplayer.fragments.MainFragment;
 import com.example.sdmusicplayer.fragments.albumFragment;
@@ -37,6 +43,7 @@ import com.example.sdmusicplayer.widgets.ScrollableTabView;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelSlideListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
+import com.viewpagerindicator.TabPageIndicator;
 
 public class MainActivity extends FragmentActivity implements ServiceConnection{
 
@@ -46,6 +53,7 @@ public class MainActivity extends FragmentActivity implements ServiceConnection{
 	public static final String SAVED_STATE_ACTION_BAR_HIDDEN = "saved_state_action_bar_hidden";    
 	BottomActionBarFragment mBActionbar;   
 	private boolean isAlreadyStarted = false;
+	private List<String> titles = new ArrayList<String>() ;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -144,7 +152,7 @@ public class MainActivity extends FragmentActivity implements ServiceConnection{
      */
     public void initViewPager() {
         // Initiate PagerAdapter
-        PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
+        //PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
 
         //Get tab visibility preferences
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -159,7 +167,7 @@ public class MainActivity extends FragmentActivity implements ServiceConnection{
         	tabs_set = defaults;
         }
         
-        //Only show tabs that were set in preferences
+/*        //Only show tabs that were set in preferences
         if(tabs_set.contains(getResources().getString(R.string.tab_mine)))
         	mPagerAdapter.addFragment(new MainFragment());
         if(tabs_set.contains(getResources().getString(R.string.tab_artists)))
@@ -178,7 +186,86 @@ public class MainActivity extends FragmentActivity implements ServiceConnection{
         //mViewPager.setCurrentItem(0);
 
         // Tabs
-        initScrollableTabs(mViewPager);
+        initScrollableTabs(mViewPager);*/
+        
+        ViewPager pager = (ViewPager)findViewById(R.id.viewPager);  
+		//构造适配器  
+        List<Fragment> fragments=new ArrayList<Fragment>(); 
+        if(tabs_set.contains(getResources().getString(R.string.tab_mine))){
+        	fragments.add(new MainFragment());
+        	titles.add(getResources().getString(R.string.tab_mine));
+        }
+        if(tabs_set.contains(getResources().getString(R.string.tab_artists))){
+        	fragments.add(new artistFragment());
+        	titles.add(getResources().getString(R.string.tab_artists));
+        }
+        if(tabs_set.contains(getResources().getString(R.string.tab_albums))){
+        	fragments.add(new AlbumsFragment());
+        	titles.add(getResources().getString(R.string.tab_albums));
+        }
+        if(tabs_set.contains(getResources().getString(R.string.tab_folder))){
+        	fragments.add(new folderFragment());        	
+        	titles.add(getResources().getString(R.string.tab_folder));
+        }
+		FragmentPagerAdapter pagerAdapter = new TabPageIndicatorAdapter(getSupportFragmentManager(),fragments);
+		pager.setAdapter(pagerAdapter);
+		//设置缓存页面，当前页面的相邻N各页面都会被缓存
+		pager.setOffscreenPageLimit(titles.size()-1);
+		//实例化TabPageIndicator然后设置ViewPager与之关联  
+        TabPageIndicator indicator = (TabPageIndicator)findViewById(R.id.indicator);  
+        indicator.setViewPager(pager);  
+		
+        //对ViewPager设置监听，用indicator设置就行了  
+        indicator.setOnPageChangeListener(new OnPageChangeListener() {  
+              
+            @Override  
+            public void onPageSelected(int arg0) {  
+                //Toast.makeText(getApplicationContext(), TITLE[arg0], Toast.LENGTH_SHORT).show();  
+            }  
+              
+            @Override  
+            public void onPageScrolled(int arg0, float arg1, int arg2) {  
+                  
+            }  
+              
+            @Override  
+            public void onPageScrollStateChanged(int arg0) {  
+                  
+            }  
+        }); 
+    }
+    
+    /** 
+     * ViewPager适配器 
+     * 
+     */  
+    public class TabPageIndicatorAdapter extends FragmentPagerAdapter {  
+    	private List<Fragment> mFragments;
+        public TabPageIndicatorAdapter(FragmentManager fm,List<Fragment> fragments) {  
+            super(fm);  
+            mFragments = fragments;              
+        }  
+  
+        @Override  
+        public Fragment getItem(int position) {  
+            //新建一个Fragment来展示ViewPager item的内容，并传递参数  
+        	Fragment fragment = mFragments.get(position); 
+        	/*Bundle args = new Bundle();
+            args.putInt("TabNum", position);
+            args.putString("arg", TITLE.get(position));    
+            fragment.setArguments(args);*/
+            return fragment;  
+        }  
+  
+        @Override  
+        public CharSequence getPageTitle(int position) {  
+            return titles.get(position % titles.size());  
+        }  
+  
+        @Override  
+        public int getCount() {  
+            return titles.size();  
+        }  
     }
     
     /**

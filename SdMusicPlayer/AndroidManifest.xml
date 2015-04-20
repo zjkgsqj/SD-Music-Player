@@ -42,7 +42,18 @@
             android:name="com.example.sdmusicplayer.SongListActivity"
             android:label="@string/label_local_music" >
         </activity>
-        
+        <!-- Track browser -->
+        <activity
+            android:name="com.example.sdmusicplayer.TracksBrowser"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustPan" >
+            <intent-filter>
+                <action android:name="android.intent.action.EDIT" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <!-- Media button receiver -->
         <receiver android:name="com.example.sdmusicplayer.service.MediaButtonIntentReceiver" >
             <intent-filter>

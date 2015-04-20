@@ -20,6 +20,7 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.media.audiofx.BassBoost;
@@ -27,7 +28,12 @@ import android.media.audiofx.Equalizer;
 import android.net.Uri;
 import android.os.RemoteException;
 import android.provider.BaseColumns;
+import android.provider.MediaStore;
 import android.provider.MediaStore.Audio;
+import android.provider.MediaStore.Audio.AlbumColumns;
+import android.provider.MediaStore.Audio.ArtistColumns;
+import android.provider.MediaStore.Audio.GenresColumns;
+import android.provider.MediaStore.Audio.PlaylistsColumns;
 
 public class MusicUtils {
 
@@ -467,5 +473,177 @@ public class MusicUtils {
             }
         }
         return null;
+    }
+    
+    public static String getArtistName(Context mContext, long artist_id, boolean default_name) {
+        String where = BaseColumns._ID + "=" + artist_id;
+        String[] cols = new String[] {
+            ArtistColumns.ARTIST
+        };
+        Uri uri = Audio.Artists.EXTERNAL_CONTENT_URI;
+        Cursor cursor = mContext.getContentResolver().query(uri, cols, where, null, null);
+        if (cursor == null){
+            return MediaStore.UNKNOWN_STRING;
+        }
+        if (cursor.getCount() <= 0) {
+            if (default_name)
+                return mContext.getString(R.string.unknown);
+            else
+                return MediaStore.UNKNOWN_STRING;
+        } else {
+            cursor.moveToFirst();
+            String name = cursor.getString(0);
+            cursor.close();
+            if (name == null || MediaStore.UNKNOWN_STRING.equals(name)) {
+                if (default_name)
+                    return mContext.getString(R.string.unknown);
+                else
+                    return MediaStore.UNKNOWN_STRING;
+            }
+            return name;
+        }
+    }
+
+    /**
+     * @param mContext
+     * @param album_id
+     * @param default_name
+     * @return album name
+     */
+    public static String getAlbumName(Context mContext, long album_id, boolean default_name) {
+        String where = BaseColumns._ID + "=" + album_id;
+        String[] cols = new String[] {
+            AlbumColumns.ALBUM
+        };
+        Uri uri = Audio.Albums.EXTERNAL_CONTENT_URI;
+        Cursor cursor = mContext.getContentResolver().query(uri, cols, where, null, null);
+        if (cursor == null){
+            return MediaStore.UNKNOWN_STRING;
+        }
+        if (cursor.getCount() <= 0) {
+            if (default_name)
+                return mContext.getString(R.string.unknown);
+            else
+                return MediaStore.UNKNOWN_STRING;
+        } else {
+            cursor.moveToFirst();
+            String name = cursor.getString(0);
+            cursor.close();
+            if (name == null || MediaStore.UNKNOWN_STRING.equals(name)) {
+                if (default_name)
+                    return mContext.getString(R.string.unknown);
+                else
+                    return MediaStore.UNKNOWN_STRING;
+            }
+            return name;
+        }
+    }
+
+    /**
+     * @param playlist_id
+     * @return playlist name
+     */
+    public static String getPlaylistName(Context mContext, long playlist_id) {
+        String where = BaseColumns._ID + "=" + playlist_id;
+        String[] cols = new String[] {
+            PlaylistsColumns.NAME
+        };
+        Uri uri = Audio.Playlists.EXTERNAL_CONTENT_URI;
+        Cursor cursor = mContext.getContentResolver().query(uri, cols, where, null, null);
+        if (cursor == null){
+            return "";
+        }
+        if (cursor.getCount() <= 0)
+            return "";
+        cursor.moveToFirst();
+        String name = cursor.getString(0);
+        cursor.close();
+        return name;
+    }
+
+    /**
+     * @param mContext
+     * @param genre_id
+     * @param default_name
+     * @return genre name
+     */
+    public static String getGenreName(Context mContext, long genre_id, boolean default_name) {
+        String where = BaseColumns._ID + "=" + genre_id;
+        String[] cols = new String[] {
+            GenresColumns.NAME
+        };
+        Uri uri = Audio.Genres.EXTERNAL_CONTENT_URI;
+        Cursor cursor = mContext.getContentResolver().query(uri, cols, where, null, null);
+        if (cursor == null){
+            return MediaStore.UNKNOWN_STRING;
+        }
+        if (cursor.getCount() <= 0) {
+            if (default_name)
+                return mContext.getString(R.string.unknown);
+            else
+                return MediaStore.UNKNOWN_STRING;
+        } else {
+            cursor.moveToFirst();
+            String name = cursor.getString(0);
+            cursor.close();
+            if (name == null || MediaStore.UNKNOWN_STRING.equals(name)) {
+                if (default_name)
+                    return mContext.getString(R.string.unknown);
+                else
+                    return MediaStore.UNKNOWN_STRING;
+            }
+            return name;
+        }
+    }
+
+    /**
+     * @param genre
+     * @return parsed genre name
+     */
+    public static String parseGenreName(Context mContext, String genre) {
+        int genre_id = -1;
+
+        if (genre == null || genre.trim().length() <= 0)
+            return mContext.getResources().getString(R.string.unknown);
+
+        try {
+            genre_id = Integer.parseInt(genre);
+        } catch (NumberFormatException e) {
+            return genre;
+        }
+        if (genre_id >= 0 && genre_id < Constants.GENRES_DB.length)
+            return Constants.GENRES_DB[genre_id];
+        else
+            return mContext.getResources().getString(R.string.unknown);
+    }
+
+    /**
+     * @param context
+     * @param numalbums
+     * @param numsongs
+     * @param isUnknown
+     * @return a string based on the number of albums for an artist or songs for
+     *         an album
+     */
+    public static String makeAlbumsLabel(Context mContext, int numalbums, int numsongs,
+            boolean isUnknown) {
+
+        StringBuilder songs_albums = new StringBuilder();
+
+        Resources r = mContext.getResources();
+        if (isUnknown) {
+            String f = r.getQuantityText(R.plurals.Nsongs, numsongs).toString();
+            sFormatBuilder.setLength(0);
+            sFormatter.format(f, Integer.valueOf(numsongs));
+            songs_albums.append(sFormatBuilder);
+            songs_albums.append("\n");
+        } else {
+            String f = r.getQuantityText(R.plurals.Nalbums, numalbums).toString();
+            sFormatBuilder.setLength(0);
+            sFormatter.format(f, Integer.valueOf(numalbums));
+            songs_albums.append(sFormatBuilder);
+            songs_albums.append("\n");
+        }
+        return songs_albums.toString();
     }
 }
