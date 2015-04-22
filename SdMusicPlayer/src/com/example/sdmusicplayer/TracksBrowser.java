@@ -34,6 +34,9 @@ import android.widget.TextView;
 
 import com.example.sdmusicplayer.adapters.PagerAdapter;
 import com.example.sdmusicplayer.fragments.BottomActionBarFragment;
+import com.example.sdmusicplayer.fragments.list.AlbumListFragment;
+import com.example.sdmusicplayer.fragments.list.ArtistAlbumsFragment;
+import com.example.sdmusicplayer.fragments.list.ArtistListFragment;
 import com.example.sdmusicplayer.helpers.utils.MusicUtils;
 import com.example.sdmusicplayer.info.ImageInfo;
 import com.example.sdmusicplayer.info.ImageProvider;
@@ -412,7 +415,8 @@ public class TracksBrowser extends FragmentActivity implements ServiceConnection
             mInfo.data = new String[]{ getAlbumId(), mAlbum, mArtist };                
             lineOne = mAlbum;
             lineTwo = mArtist;
-        } else if (Audio.Playlists.CONTENT_TYPE.equals(mimeType)) {
+        } 
+        /*else if (Audio.Playlists.CONTENT_TYPE.equals(mimeType)) {
         	String plyName = bundle.getString(PLAYLIST_NAME);
         	mInfo.type = TYPE_PLAYLIST;
             mInfo.data = new String[]{ plyName };               
@@ -425,7 +429,7 @@ public class TracksBrowser extends FragmentActivity implements ServiceConnection
             mInfo.size = SIZE_NORMAL;
             mInfo.data = new String[]{ genName };             
             lineOne = genName;
-        }
+        }*/
 
         mImageProvider.loadImage( imageView, mInfo );        
         TextView lineOneView = (TextView)findViewById(R.id.half_artist_image_text);
@@ -440,11 +444,11 @@ public class TracksBrowser extends FragmentActivity implements ServiceConnection
     private void initPager() {
         // Initiate PagerAdapter
         PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
-        /*if (Utils.isArtist(mimeType))
+        if (Utils.isArtist(mimeType))
             // Show all albums for an artist
             mPagerAdapter.addFragment(new ArtistAlbumsFragment(bundle));
         // Show the tracks for an artist or album
-        if(Playlists.CONTENT_TYPE.equals(mimeType)){
+/*        if(Playlists.CONTENT_TYPE.equals(mimeType)){
             mPagerAdapter.addFragment(new PlaylistListFragment(bundle));
         }
         else if(Genres.CONTENT_TYPE.equals(mimeType)){
@@ -452,10 +456,13 @@ public class TracksBrowser extends FragmentActivity implements ServiceConnection
         }
         else if(Utils.isArtist(mimeType)){
         	mPagerAdapter.addFragment(new ArtistListFragment(bundle));
+        }*/
+        if(Utils.isArtist(mimeType)){
+        	mPagerAdapter.addFragment(new ArtistListFragment(bundle));
         }
         else if(Audio.Albums.CONTENT_TYPE.equals(mimeType)){
         	mPagerAdapter.addFragment(new AlbumListFragment(bundle));
-        }*/
+        }
 
         // Set up ViewPager
         mViewPager = (ViewPager)findViewById(R.id.viewPager);
@@ -619,10 +626,12 @@ public class TracksBrowser extends FragmentActivity implements ServiceConnection
         } else if (Audio.Albums.CONTENT_TYPE.equals(mimeType)) {
             id = bundle.getLong(BaseColumns._ID);
             name =  getString (R.string.album_page_title)+MusicUtils.getAlbumName(this, id, true);
-        } else if (Audio.Genres.CONTENT_TYPE.equals(mimeType)) {
+        } 
+        /*else if (Audio.Genres.CONTENT_TYPE.equals(mimeType)) {
             id = bundle.getLong(BaseColumns._ID);
             name = MusicUtils.parseGenreName(this, MusicUtils.getGenreName(this, id, true));
-        } else {
+        }*/
+        else {
             setTitle(R.string.app_name);
             return;
         }

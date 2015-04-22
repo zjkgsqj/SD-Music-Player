@@ -1,5 +1,6 @@
 package com.example.sdmusicplayer.helpers.utils;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Formatter;
 import java.util.HashMap;
@@ -645,5 +646,23 @@ public class MusicUtils {
             songs_albums.append("\n");
         }
         return songs_albums.toString();
+    }
+    
+    /**
+     * 获取文件夹名称
+     * @param filepath
+     * @return
+     */
+    public static String getFolderName(String filepath ){
+    	return filepath.substring(filepath.lastIndexOf(File.separator) + 1);
+    }
+    
+    /**
+     * 获取文件夹路径
+     * @param filepath
+     * @return
+     */
+    public static String getFolderPath(String filepath ){
+    	return filepath.substring(0,filepath.lastIndexOf(File.separator));
     }
 }

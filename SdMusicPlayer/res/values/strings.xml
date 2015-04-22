@@ -23,9 +23,9 @@
     <plurals name="Nalbums">
 
         <!-- Number of albums is one -->
-        <item quantity="one">1 album</item>
+        <item quantity="one">1 张专辑</item>
         <!-- Number of albums is more than one -->
-        <item quantity="other"><xliff:g id="count">%d</xliff:g> albums</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> 张专辑</item>
     </plurals>
 
     <!-- Used to indicate the number of songs for an album -->
@@ -33,8 +33,8 @@
     <plurals name="Nsongs">
 
         <!-- Number of songs is one -->
-        <item quantity="one">1 song</item>
-        <item quantity="other"><xliff:g id="count">%d</xliff:g> songs</item>
+        <item quantity="one">1 首歌曲</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> 首歌曲</item>
     </plurals>
 
     <!-- Toasts after adding song(s) to playlists -->
@@ -70,11 +70,11 @@
     <string name="rename_playlist">Rename playlist</string>
 
     <!-- Shuffle and repeat messages -->
-    <string name="repeat_one">Repeat one</string>
-    <string name="repeat_all">Repeat all</string>
-    <string name="repeat_off">Repeat off</string>
-    <string name="shuffle_off">Shuffle off</string>
-    <string name="shuffle_on">Shuffle on</string>
+    <string name="repeat_one">单曲循环</string>
+    <string name="repeat_all">全部循环</string>
+    <string name="repeat_off">关闭循环</string>
+    <string name="shuffle_off">顺序播放</string>
+    <string name="shuffle_on">随机播放</string>
 
     <!-- Share Intent -->
     <string name="now_listening_to">Now listening to:</string>
@@ -127,16 +127,7 @@
     <string name="widget_style_summary">Choose the widget design</string>
     <string name="widget_style_dark">Holo Dark</string>
     <string name="widget_style_light">Holo Light</string>
-    <string name="about_apollomod_title">About ApolloMod</string>
-    <string name="about_apollomod_message"><![CDATA[ApolloMod is an open source music player based on CyanogenMod\'s Apollo Music Player and released under the same Apache License.\n\n
-License Link:\n
-        http://www.apache.org/licenses/LICENSE-2.0.html \n\n
-ApolloMod Source Code:\n
-https://github.com/Splitter/android_packages_apps_apolloMod  \n\n
-Original Apollo Source Code: \n
-https://github.com/CyanogenMod/android_packages_apps_Apollo/tree/cm-10.1
-        
-    ]]></string>
+
     <string name="dependencies">Dependency Licenses</string>
     <string name="dependencies_title">Dependency Licenses:</string>
     
@@ -189,8 +180,8 @@ https://github.com/CyanogenMod/android_packages_apps_Apollo/tree/cm-10.1
     <string name="error">Error</string>
     
     <!-- Titles for Albums/Artist screens -->
-    <string name="artist_page_title">" Artist: "</string>
-    <string name="album_page_title">" Album: "</string>
+    <string name="artist_page_title">" 艺术家: "</string>
+    <string name="album_page_title">" 专辑: "</string>
     
     <!--  Simple EQ -->
     <string name="simple_eq_page_title">Equalizer</string>

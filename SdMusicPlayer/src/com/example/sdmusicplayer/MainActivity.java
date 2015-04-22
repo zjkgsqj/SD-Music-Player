@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -28,12 +29,11 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 
 import com.example.sdmusicplayer.adapters.ScrollingTabsAdapter;
-import com.example.sdmusicplayer.fragments.AlbumsFragment;
 import com.example.sdmusicplayer.fragments.BottomActionBarFragment;
 import com.example.sdmusicplayer.fragments.MainFragment;
-import com.example.sdmusicplayer.fragments.albumFragment;
-import com.example.sdmusicplayer.fragments.artistFragment;
-import com.example.sdmusicplayer.fragments.folderFragment;
+import com.example.sdmusicplayer.fragments.grid.AlbumsFragment;
+import com.example.sdmusicplayer.fragments.grid.ArtistsFragment;
+import com.example.sdmusicplayer.fragments.list.FolderFragment;
 import com.example.sdmusicplayer.helpers.utils.MusicUtils;
 import com.example.sdmusicplayer.service.MusicService;
 import com.example.sdmusicplayer.service.ServiceToken;
@@ -62,6 +62,8 @@ public class MainActivity extends FragmentActivity implements ServiceConnection{
         if (!Utils.isTablet(this)){
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);     
         }
+        //Suggests an audio stream whose volume should be changed by the hardware volume controls.
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);  
         
 		setContentView(R.layout.activity_main);
@@ -196,7 +198,7 @@ public class MainActivity extends FragmentActivity implements ServiceConnection{
         	titles.add(getResources().getString(R.string.tab_mine));
         }
         if(tabs_set.contains(getResources().getString(R.string.tab_artists))){
-        	fragments.add(new artistFragment());
+        	fragments.add(new ArtistsFragment());
         	titles.add(getResources().getString(R.string.tab_artists));
         }
         if(tabs_set.contains(getResources().getString(R.string.tab_albums))){
@@ -204,7 +206,7 @@ public class MainActivity extends FragmentActivity implements ServiceConnection{
         	titles.add(getResources().getString(R.string.tab_albums));
         }
         if(tabs_set.contains(getResources().getString(R.string.tab_folder))){
-        	fragments.add(new folderFragment());        	
+        	fragments.add(new FolderFragment());        	
         	titles.add(getResources().getString(R.string.tab_folder));
         }
 		FragmentPagerAdapter pagerAdapter = new TabPageIndicatorAdapter(getSupportFragmentManager(),fragments);

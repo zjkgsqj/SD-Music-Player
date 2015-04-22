@@ -1,4 +1,4 @@
-package com.example.sdmusicplayer.fragments;
+package com.example.sdmusicplayer.fragments.base;
 
 import com.example.sdmusicplayer.R;
 import com.example.sdmusicplayer.adapters.base.GridViewAdapter;

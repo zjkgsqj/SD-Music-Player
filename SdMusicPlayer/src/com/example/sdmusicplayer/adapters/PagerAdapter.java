@@ -1,7 +1,9 @@
 package com.example.sdmusicplayer.adapters;
 
 import java.util.ArrayList;
-import com.example.sdmusicplayer.fragments.RefreshableFragment;
+
+import com.example.sdmusicplayer.fragments.base.RefreshableFragment;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;

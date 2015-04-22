@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.sdmusicplayer.fragments;
+package com.example.sdmusicplayer.fragments.base;
 
 import android.support.v4.app.Fragment;
 

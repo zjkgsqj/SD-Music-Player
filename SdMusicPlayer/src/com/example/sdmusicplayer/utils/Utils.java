@@ -9,11 +9,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import com.example.sdmusicplayer.R;
-import com.example.sdmusicplayer.TracksBrowser;
-import com.example.sdmusicplayer.info.ImageInfo;
-import com.example.sdmusicplayer.info.ImageProvider;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
@@ -30,11 +25,16 @@ import android.provider.BaseColumns;
 import android.provider.MediaStore.Audio;
 import android.provider.MediaStore.Audio.AlbumColumns;
 import android.provider.MediaStore.Audio.ArtistColumns;
-import android.provider.MediaStore.Audio.PlaylistsColumns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.sdmusicplayer.R;
+import com.example.sdmusicplayer.TracksBrowser;
+import com.example.sdmusicplayer.info.ImageInfo;
+import com.example.sdmusicplayer.info.ImageProvider;
 
 /**
  *
@@ -153,6 +153,17 @@ public class Utils {
     }
     
     /**
+     * @param message
+     */
+    public static void showToast(int message, Toast mToast, Context context) {
+        if (mToast == null) {
+            mToast = Toast.makeText(context, "", Toast.LENGTH_SHORT);
+        }
+        mToast.setText(context.getString(message));
+        mToast.show();
+    }
+    
+    /**
      * Used to fit a Bitmap nicely inside a View
      * 
      * @param view
@@ -246,7 +257,7 @@ public class Utils {
             bundle.putString(Constants.ALBUM_ID_KEY, albumId);
             bundle.putBoolean(Constants.UP_STARTS_ALBUM_ACTIVITY, true);
         }
-        else if( Type == Constants.TYPE_GENRE ){
+        /*else if( Type == Constants.TYPE_GENRE ){
             String genreKey = mCursor.getString(mCursor.getColumnIndexOrThrow(Audio.Genres.NAME));
             bundle.putString(Constants.MIME_TYPE, Audio.Genres.CONTENT_TYPE);
             bundle.putString(Constants.GENRE_KEY, genreKey);
@@ -256,7 +267,7 @@ public class Utils {
             bundle.putString(Constants.MIME_TYPE, Audio.Playlists.CONTENT_TYPE);
             bundle.putString(Constants.PLAYLIST_NAME, playlistName);
             bundle.putLong(BaseColumns._ID, id);
-        }
+        }*/
         
         bundle.putLong(BaseColumns._ID, id);
         Intent intent = new Intent(Intent.ACTION_VIEW);

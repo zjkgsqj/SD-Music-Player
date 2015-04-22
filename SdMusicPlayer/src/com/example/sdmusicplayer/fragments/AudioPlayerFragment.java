@@ -2,7 +2,6 @@
 package com.example.sdmusicplayer.fragments;
 
 import java.lang.ref.WeakReference;
-
 import com.example.sdmusicplayer.R;
 import com.example.sdmusicplayer.adapters.AlbumArtPagerAdapter;
 import com.example.sdmusicplayer.helpers.utils.MusicUtils;
@@ -14,7 +13,7 @@ import com.example.sdmusicplayer.utils.Constants;
 import com.example.sdmusicplayer.utils.Utils;
 import com.example.sdmusicplayer.widgets.RepeatingImageButton;
 import com.example.sdmusicplayer.widgets.VisualizerView;
-
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -242,17 +241,17 @@ public class AudioPlayerFragment extends Fragment {
             int mode = MusicUtils.mService.getRepeatMode();
             if (mode == MusicService.REPEAT_NONE) {
                 MusicUtils.mService.setRepeatMode(MusicService.REPEAT_ALL);
-                //Utils.showToast(R.string.repeat_all, mToast, getActivity());
+                Utils.showToast(R.string.repeat_all, mToast, getActivity());
             } else if (mode == MusicService.REPEAT_ALL) {
                 MusicUtils.mService.setRepeatMode(MusicService.REPEAT_CURRENT);
                 if (MusicUtils.mService.getShuffleMode() != MusicService.SHUFFLE_NONE) {
                     MusicUtils.mService.setShuffleMode(MusicService.SHUFFLE_NONE);
                     setShuffleButtonImage();
                 }
-                //Utils.showToast(R.string.repeat_one, mToast, getActivity());
+                Utils.showToast(R.string.repeat_one, mToast, getActivity());
             } else {
                 MusicUtils.mService.setRepeatMode(MusicService.REPEAT_NONE);
-                //Utils.showToast(R.string.repeat_off, mToast, getActivity());
+                Utils.showToast(R.string.repeat_off, mToast, getActivity());
             }
             setRepeatButtonImage();
         } catch (RemoteException ex) {
@@ -315,11 +314,11 @@ public class AudioPlayerFragment extends Fragment {
                     MusicUtils.mService.setRepeatMode(MusicService.REPEAT_ALL);
                     setRepeatButtonImage();
                 }
-                //Utils.showToast(R.string.shuffle_on, mToast, getActivity());
+                Utils.showToast(R.string.shuffle_on, mToast, getActivity());
             } else if (shuffle == MusicService.SHUFFLE_NORMAL
                     || shuffle == MusicService.SHUFFLE_AUTO) {
                 MusicUtils.mService.setShuffleMode(MusicService.SHUFFLE_NONE);
-                //Utils.showToast(R.string.shuffle_off, mToast, getActivity());
+                Utils.showToast(R.string.shuffle_off, mToast, getActivity());
             }
             setShuffleButtonImage();
         } catch (RemoteException ex) {
@@ -409,23 +408,23 @@ public class AudioPlayerFragment extends Fragment {
      * Set the repeat images
      */
     private void setRepeatButtonImage() {
-//        if (MusicUtils.mService == null)
-//            return;
-//        try {
-//            switch (MusicUtils.mService.getRepeatMode()) {
-//                case ApolloService.REPEAT_ALL:
-//                    mRepeat.setImageResource(R.drawable.apollo_holo_light_repeat_all);
-//                    break;
-//                case ApolloService.REPEAT_CURRENT:
-//                    mRepeat.setImageResource(R.drawable.apollo_holo_light_repeat_one);
-//                    break;
-//                default:
-//                    mRepeat.setImageResource(R.drawable.apollo_holo_light_repeat_normal);
-//                    break;
-//            }
-//        } catch (RemoteException ex) {
-//            ex.printStackTrace();
-//        }
+        if (MusicUtils.mService == null)
+            return;
+        try {
+            switch (MusicUtils.mService.getRepeatMode()) {
+                case MusicService.REPEAT_ALL:
+                    mRepeat.setImageResource(R.drawable.apollo_holo_light_repeat_all);
+                    break;
+                case MusicService.REPEAT_CURRENT:
+                    mRepeat.setImageResource(R.drawable.apollo_holo_light_repeat_one);
+                    break;
+                default:
+                    mRepeat.setImageResource(R.drawable.apollo_holo_light_repeat_normal);
+                    break;
+            }
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -480,7 +479,8 @@ public class AudioPlayerFragment extends Fragment {
     /**
      * We need to refresh the time via a Handler
      */
-    private final Handler mHandler = new Handler() {
+    @SuppressLint("HandlerLeak")
+	private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {

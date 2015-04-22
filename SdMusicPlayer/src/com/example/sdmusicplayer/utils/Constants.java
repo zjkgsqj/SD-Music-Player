@@ -4,6 +4,8 @@ public final class Constants {
 
 	// Last.fm API
     public final static String LASTFM_API_KEY = "0bec3f7ec1f914d7c960c12a916c8fb3";
+    // Storage Volume
+    public final static String EXTERNAL = "external";
     
 	public final static String VISUALIZATION_TYPE = "visualization_type";
 	//Image Loading Constants
@@ -12,6 +14,7 @@ public final class Constants {
 							   TYPE_GENRE = "genre", 
 						       TYPE_SONG = "song",
 							   TYPE_PLAYLIST  = "playlist", 
+						       TYPE_FOLDER  = "folder", 
 							   ALBUM_SUFFIX = "albartimg", 
 							   ARTIST_SUFFIX = "artstimg", 
 							   PLAYLIST_SUFFIX = "plylstimg", 
@@ -42,6 +45,7 @@ public final class Constants {
     		ALBUM_KEY = "album", 
     		ALBUM_ID_KEY = "albumid", 
     		NUMALBUMS = "num_albums",
+    		NUMSONGS = "num_songs",
             GENRE_KEY = "genres", 
             ARTIST_ID = "artistid", 
             NUMWEEKS = "numweeks",

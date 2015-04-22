@@ -1,5 +1,5 @@
 
-package com.example.sdmusicplayer.adapters;
+package com.example.sdmusicplayer.adapters.grid;
 
 import com.example.sdmusicplayer.adapters.base.GridViewAdapter;
 import com.example.sdmusicplayer.helpers.utils.MusicUtils;

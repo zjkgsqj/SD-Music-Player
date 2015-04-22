@@ -2,13 +2,16 @@ package com.example.sdmusicplayer;
 
 import android.content.ComponentName;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Files.FileColumns;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,11 +23,13 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.example.sdmusicplayer.adapters.base.ListViewAdapter;
+import com.example.sdmusicplayer.adapters.list.SonglistAdapter;
 import com.example.sdmusicplayer.fragments.BottomActionBarFragment;
 import com.example.sdmusicplayer.helpers.utils.MusicUtils;
 import com.example.sdmusicplayer.service.MusicService;
 import com.example.sdmusicplayer.service.ServiceToken;
 import com.example.sdmusicplayer.service.aidl.IMusicService;
+import com.example.sdmusicplayer.utils.Constants;
 import com.example.sdmusicplayer.utils.Utils;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelSlideListener;
@@ -40,6 +45,7 @@ public class SongListActivity extends FragmentActivity implements ServiceConnect
 	protected ListViewAdapter mAdapter;
 	protected ListView mListView;
 	protected Cursor mCursor;
+	private Bundle bundle;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +54,13 @@ public class SongListActivity extends FragmentActivity implements ServiceConnect
 		if (!Utils.isTablet(this)){
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);     
 		}
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);         
 		setContentView(R.layout.activity_song_list);
 
+		Intent intent = getIntent();
+        bundle = savedInstanceState != null ? savedInstanceState : intent.getExtras();
+        
 		mBActionbar =(BottomActionBarFragment) getSupportFragmentManager().findFragmentById(R.id.bottomactionbar_new);		  
 		mBActionbar.setUpQueueSwitch(this);        
 		mPanel = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
@@ -133,12 +143,20 @@ public class SongListActivity extends FragmentActivity implements ServiceConnect
 	
 	private void initSongList() {
 		if(mCursor==null){
+			String folder = bundle.getString(FileColumns.PARENT);
+			String where = null;
+			if(folder != null && folder.length() > 0){
+				StringBuilder selection = new StringBuilder(FileColumns.PARENT
+						+ " = " + folder );
+				where = selection.toString();
+			}
 			ContentResolver resolver = getContentResolver();
+			//MediaStore.Files.getContentUri(Constants.EXTERNAL)
 			mCursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-					null, null, null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
+					null, where, null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
 		}
 		mListView = (ListView) findViewById(R.id.songList);
-		mAdapter =new ListViewAdapter(this, R.layout.listview_song_item, mCursor,
+		mAdapter =new SonglistAdapter(this, R.layout.listview_song_item, mCursor,
 				new String[] {}, new int[] {}, 0);
 		mListView.setAdapter(mAdapter);
 		mListView.setOnItemClickListener(new OnItemClickListener(){

@@ -1,7 +1,8 @@
 
-package com.example.sdmusicplayer.fragments;
+package com.example.sdmusicplayer.fragments.grid;
 
-import com.example.sdmusicplayer.adapters.AlbumAdapter;
+import com.example.sdmusicplayer.adapters.grid.AlbumAdapter;
+import com.example.sdmusicplayer.fragments.base.GridViewFragment;
 import com.example.sdmusicplayer.utils.Constants;
 
 import android.provider.BaseColumns;
