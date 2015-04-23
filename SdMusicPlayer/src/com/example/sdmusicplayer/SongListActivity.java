@@ -10,7 +10,8 @@ import android.database.Cursor;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.provider.MediaStore;
+import android.provider.MediaStore.Audio;
+import android.provider.MediaStore.Files;
 import android.provider.MediaStore.Files.FileColumns;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
@@ -40,6 +41,8 @@ public class SongListActivity extends FragmentActivity implements ServiceConnect
 	private ServiceToken mToken;
 	private SlidingUpPanelLayout mPanel;
 	public static final String SAVED_STATE_ACTION_BAR_HIDDEN = "saved_state_action_bar_hidden";
+	public static final int FILTER_SIZE = 1 * 1024 * 1024;// 1MB
+	public static final int FILTER_DURATION = 1 * 60 * 1000;// 1分钟
 	private BottomActionBarFragment mBActionbar;
 	private boolean isAlreadyStarted = false;
 	protected ListViewAdapter mAdapter;
@@ -143,17 +146,22 @@ public class SongListActivity extends FragmentActivity implements ServiceConnect
 	
 	private void initSongList() {
 		if(mCursor==null){
-			String folder = bundle.getString(FileColumns.PARENT);
-			String where = null;
-			if(folder != null && folder.length() > 0){
-				StringBuilder selection = new StringBuilder(FileColumns.PARENT
-						+ " = " + folder );
-				where = selection.toString();
-			}
+			String type = bundle.getString(Constants.SOURCE_TYPE);
 			ContentResolver resolver = getContentResolver();
-			//MediaStore.Files.getContentUri(Constants.EXTERNAL)
-			mCursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-					null, where, null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
+			StringBuilder mSelection = new StringBuilder();
+			/*// 过滤大小小于1M，时长小于1分钟的音频
+			mSelection.append(Media.SIZE + " > " + FILTER_SIZE);
+			mSelection.append(" and " + Media.DURATION + " > " + FILTER_DURATION);*/
+			if(Constants.TYPE_FOLDER.equals(type)){
+				String folder = bundle.getString(FileColumns.PARENT);
+				mSelection.append(FileColumns.MEDIA_TYPE).append(" = ").append(FileColumns.MEDIA_TYPE_AUDIO);
+				mSelection.append(" and ").append(FileColumns.PARENT).append(" = ").append(folder);
+				mCursor = resolver.query(Files.getContentUri(Constants.EXTERNAL),
+						null, mSelection.toString(), null, Audio.Media.DEFAULT_SORT_ORDER);
+			}else if(Constants.TYPE_SONG.equals(type)){
+				mCursor = resolver.query(Audio.Media.EXTERNAL_CONTENT_URI,
+						null, null, null, Audio.Media.DEFAULT_SORT_ORDER);
+			}
 		}
 		mListView = (ListView) findViewById(R.id.songList);
 		mAdapter =new SonglistAdapter(this, R.layout.listview_song_item, mCursor,
@@ -184,6 +192,7 @@ public class SongListActivity extends FragmentActivity implements ServiceConnect
         mToken = MusicUtils.bindToService(this, this);
         IntentFilter filter = new IntentFilter();
         filter.addAction(MusicService.META_CHANGED);
+        this.setTitle();
         super.onStart();
     }
 
@@ -214,5 +223,13 @@ public class SongListActivity extends FragmentActivity implements ServiceConnect
 			super.onBackPressed();
 		}
 	} 
+	
+	private void setTitle() {
+		if(bundle != null){
+			if(Constants.TYPE_FOLDER.equals(bundle.getString(Constants.SOURCE_TYPE))){
+				setTitle(getString(R.string.Folder_page_title) + bundle.getString(Constants.FOLDER_NAME));
+			}
+		}
+	}
 
 }

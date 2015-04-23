@@ -31,6 +31,7 @@ import android.os.RemoteException;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Audio;
+import android.provider.MediaStore.MediaColumns;
 import android.provider.MediaStore.Audio.AlbumColumns;
 import android.provider.MediaStore.Audio.ArtistColumns;
 import android.provider.MediaStore.Audio.GenresColumns;
@@ -664,5 +665,44 @@ public class MusicUtils {
      */
     public static String getFolderPath(String filepath ){
     	return filepath.substring(0,filepath.lastIndexOf(File.separator));
+    }
+    
+    /**
+     * 根据文件夹路径获取艺术家
+     * @param mContext
+     * @param path
+     * @param default_name
+     * @return
+     */
+    public static String getArtisByPath(Context mContext, String path, boolean default_name) {
+        ContentResolver resolver = mContext.getContentResolver();
+        String[] cols = new String[] {
+        		MediaStore.Audio.Media.ARTIST
+            };
+        String where = MediaColumns.DATA + "=?";
+        String selectionArgs[] = new String[] { path };
+        Cursor cursor = resolver.query(
+        		MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+        		cols, where, selectionArgs, null);
+        if (cursor == null){
+            return MediaStore.UNKNOWN_STRING;
+        }
+        if (cursor.getCount() <= 0) {
+            if (default_name)
+                return mContext.getString(R.string.unknown);
+            else
+                return MediaStore.UNKNOWN_STRING;
+        } else {
+            cursor.moveToFirst();
+            String name = cursor.getString(0);
+            cursor.close();
+            if (name == null || MediaStore.UNKNOWN_STRING.equals(name)) {
+                if (default_name)
+                    return mContext.getString(R.string.unknown);
+                else
+                    return MediaStore.UNKNOWN_STRING;
+            }
+            return name;
+        }
     }
 }

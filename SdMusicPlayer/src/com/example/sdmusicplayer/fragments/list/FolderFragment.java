@@ -1,6 +1,8 @@
 
 package com.example.sdmusicplayer.fragments.list;
 
+import java.io.File;
+
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import com.example.sdmusicplayer.SongListActivity;
 import com.example.sdmusicplayer.TracksBrowser;
 import com.example.sdmusicplayer.adapters.list.FolderAdapter;
 import com.example.sdmusicplayer.fragments.base.ListViewFragment;
+import com.example.sdmusicplayer.helpers.utils.MusicUtils;
 import com.example.sdmusicplayer.utils.Constants;
 import com.example.sdmusicplayer.utils.Utils;
 
@@ -30,7 +33,7 @@ public class FolderFragment extends ListViewFragment{
         };
     	StringBuilder Where = new StringBuilder(FileColumns.MEDIA_TYPE
 				+ " = " + FileColumns.MEDIA_TYPE_AUDIO );
-    	Where.append(") group by ( " + FileColumns.PARENT);
+    	Where.append(") group by ( ").append(FileColumns.PARENT);
     	mWhere = Where.toString();
         mSortOrder = FileColumns.DATA;
         mUri = MediaStore.Files.getContentUri(Constants.EXTERNAL);
@@ -40,10 +43,14 @@ public class FolderFragment extends ListViewFragment{
 
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-    	//Utils.startTracksBrowser(mType, id, mCursor, getActivity());
     	Bundle bundle = new Bundle();
     	Cursor mCursor = (Cursor) mListView.getItemAtPosition(position);
-    	bundle.putString(FileColumns.PARENT, mCursor.getString(mCursor.getColumnIndexOrThrow(FileColumns.PARENT)));
+    	String filePath = mCursor.getString(mCursor.getColumnIndexOrThrow(FileColumns.DATA)); 
+		String folderPath = MusicUtils.getFolderPath(filePath);
+    	bundle.putString(FileColumns.PARENT, mCursor.getString(
+    			mCursor.getColumnIndexOrThrow(FileColumns.PARENT)));
+    	bundle.putString(Constants.SOURCE_TYPE, Constants.TYPE_FOLDER);
+    	bundle.putString(Constants.FOLDER_NAME, MusicUtils.getFolderName(folderPath));
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setClass(getActivity(), SongListActivity.class);
         intent.putExtras(bundle);

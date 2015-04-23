@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.sdmusicplayer.R;
 import com.example.sdmusicplayer.SongListActivity;
+import com.example.sdmusicplayer.utils.Constants;
 
 public class MainFragment extends Fragment{
 
@@ -27,7 +28,10 @@ public class MainFragment extends Fragment{
 		localMusic.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+            	Bundle bundle = new Bundle();
+            	bundle.putString(Constants.SOURCE_TYPE, Constants.TYPE_SONG);
             	Intent mIntent = new Intent(getActivity(), SongListActivity.class);
+            	mIntent.putExtras(bundle);
 				startActivity(mIntent);
             }
         });

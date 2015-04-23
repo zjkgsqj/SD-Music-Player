@@ -34,5 +34,8 @@
     
     <!-- light White -->
     <color name="lightWhite">#77ffffff</color>
+    <!-- light White -->
+    <color name="lightBlue">#7733b5e5</color>
+    
 
 </resources>

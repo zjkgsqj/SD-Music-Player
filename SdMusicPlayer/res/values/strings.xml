@@ -182,6 +182,7 @@
     <!-- Titles for Albums/Artist screens -->
     <string name="artist_page_title">" 艺术家: "</string>
     <string name="album_page_title">" 专辑: "</string>
+    <string name="Folder_page_title">" 文件夹: "</string>
     
     <!--  Simple EQ -->
     <string name="simple_eq_page_title">Equalizer</string>

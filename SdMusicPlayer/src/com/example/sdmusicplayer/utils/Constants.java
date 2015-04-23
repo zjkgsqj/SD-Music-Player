@@ -28,6 +28,7 @@ public final class Constants {
 	// Bundle & Intent type
     public final static String MIME_TYPE = "mimetype", 
     		                   INTENT_ACTION = "action",
+    		                   SOURCE_TYPE = "sourcetype",
     		                   DATA_SCHEME = "file";
     
     // Playlists
@@ -54,6 +55,10 @@ public final class Constants {
             PLAYLIST_NAME = "playlist", 
             WIDGET_STYLE="widget_type",
             UP_STARTS_ALBUM_ACTIVITY = "upStartsAlbumActivity";
+    
+    
+    public final static String FOLDER_PATH = "folder_path";
+    public final static String FOLDER_NAME = "folder_name";
     
     // Genres
     public final static String[] GENRES_DB = {
