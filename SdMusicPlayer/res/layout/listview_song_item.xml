@@ -52,6 +52,7 @@
         android:paddingRight="@dimen/listview_items_padding_right"
         android:paddingTop="@dimen/listview_items_padding_small_top"
         android:singleLine="true"
+        android:textColor="@color/lightblack"
         android:textSize="@dimen/text_size_micro" />
 
 </RelativeLayout>

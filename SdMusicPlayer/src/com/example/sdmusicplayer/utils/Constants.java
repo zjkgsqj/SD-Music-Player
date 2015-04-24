@@ -14,7 +14,9 @@ public final class Constants {
 							   TYPE_GENRE = "genre", 
 						       TYPE_SONG = "song",
 							   TYPE_PLAYLIST  = "playlist", 
+							   TYPE_PLAYLIST_LIST  = "playlist_list", 
 						       TYPE_FOLDER  = "folder", 
+						       TYPE_RECENT_ADD  = "recent_add",
 							   ALBUM_SUFFIX = "albartimg", 
 							   ARTIST_SUFFIX = "artstimg", 
 							   PLAYLIST_SUFFIX = "plylstimg", 
@@ -52,7 +54,8 @@ public final class Constants {
             NUMWEEKS = "numweeks",
             BUILD_DEPENDS = "build_depends",
             PLAYLIST_NAME_FAVORITES = "Favorites", 
-            PLAYLIST_NAME = "playlist", 
+            PLAYLIST_ID = "playlist_id", 
+            PLAYLIST_NAME = "playlist_name", 
             WIDGET_STYLE="widget_type",
             UP_STARTS_ALBUM_ACTIVITY = "upStartsAlbumActivity";
     

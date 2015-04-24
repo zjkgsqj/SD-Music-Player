@@ -1,28 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- pressed -->
+    <item android:state_pressed="true">
+        <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+            <item>
+                <shape android:dither="true" android:shape="rectangle">
+                    <corners android:radius="2dp" />
+                    <solid android:color="#ccc" />
+                </shape>
+            </item>
+            <item android:bottom="2dp">
+                <shape android:dither="true" android:shape="rectangle">
+                    <corners android:radius="2dp" />
+                    <solid android:color="@color/water" />
+                    <padding android:bottom="8dp" android:left="8dp" android:right="8dp" android:top="8dp" />
+                </shape>                
+            </item>
+        </layer-list>        
+    </item> 
+    
+    <!-- focused -->
+    <item android:state_focused="true">
+        <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+            <item>
+                <shape android:dither="true" android:shape="rectangle">
+                    <corners android:radius="2dp" />
+                    <solid android:color="#ccc" />
+                </shape>
+            </item>
+            <item android:bottom="2dp">
+                <shape android:dither="true" android:shape="rectangle">
+                    <corners android:radius="2dp" />
+                    <solid android:color="@color/water" />
+                    <padding android:bottom="8dp" android:left="8dp" android:right="8dp" android:top="8dp" />
+                </shape>
+            </item>
+        </layer-list>
+    </item> 
+    
+    
+    <!-- default -->
     <item>
-        <shape android:shape="rectangle"
-            android:dither="true">
+        <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+            <item>
+                <shape android:dither="true" android:shape="rectangle">
+                    <corners android:radius="2dp" />                   
+                    <solid android:color="#ccc" />
+                </shape>
+            </item>
+            <item android:bottom="2dp">
+                <shape android:dither="true" android:shape="rectangle">
+                    <corners android:radius="2dp" />
+                    <solid android:color="@color/white" />
+                    <padding android:bottom="8dp" android:left="8dp" android:right="8dp" android:top="8dp" />
+                </shape>
+            </item>
+        </layer-list>
+    </item> 
 
-            <corners android:radius="2dp"/>
-
-            <solid android:color="#ccc" />
-
-        </shape>
-    </item>
-
-    <item android:bottom="2dp">
-        <shape android:shape="rectangle"
-            android:dither="true">
-
-            <corners android:radius="2dp" />
-
-            <solid android:color="@color/listview_item_bg_color" />
-
-            <padding android:bottom="8dp"
-                android:left="8dp"
-                android:right="8dp"
-                android:top="8dp" />
-        </shape>
-    </item>
-</layer-list>
+</selector>

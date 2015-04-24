@@ -16,7 +16,7 @@ import com.example.sdmusicplayer.utils.Constants;
 
 public class MainFragment extends Fragment{
 
-	private TextView localMusic, myFavorite, recentPlay, playList;
+	private TextView localMusic, myFavorite, recentPlay, playList,recentAdd,playQueue;
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,  
             Bundle savedInstanceState){
@@ -25,6 +25,8 @@ public class MainFragment extends Fragment{
 		myFavorite = (TextView)contextView.findViewById(R.id.label_my_favorite);
 		recentPlay = (TextView)contextView.findViewById(R.id.label_recent_play);
 		playList = (TextView)contextView.findViewById(R.id.label_play_list);
+		recentAdd = (TextView)contextView.findViewById(R.id.label_recent_add);
+		playQueue = (TextView)contextView.findViewById(R.id.label_play_queue);
 		localMusic.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,16 +49,33 @@ public class MainFragment extends Fragment{
                
             }
         });
+		recentAdd.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            	Bundle bundle = new Bundle();
+            	bundle.putString(Constants.SOURCE_TYPE, Constants.TYPE_RECENT_ADD);
+            	Intent mIntent = new Intent(getActivity(), SongListActivity.class);
+            	mIntent.putExtras(bundle);
+				startActivity(mIntent);
+            }
+        });
 		playList.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            	Bundle bundle = new Bundle();
+            	bundle.putString(Constants.SOURCE_TYPE, Constants.TYPE_PLAYLIST);
+            	Intent mIntent = new Intent(getActivity(), SongListActivity.class);
+            	mIntent.putExtras(bundle);
+				startActivity(mIntent);
+            }
+        });
+		playQueue.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                
             }
         });
-		
-		
-		
-		
+				
 		return contextView;  
 	}
 

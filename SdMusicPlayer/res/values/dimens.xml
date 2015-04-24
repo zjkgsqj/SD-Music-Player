@@ -7,6 +7,7 @@
     <dimen name="text_size_small">14sp</dimen>
     <dimen name="text_size_medium">16sp</dimen>
     <dimen name="text_size_large">18sp</dimen>
+    <dimen name="text_size_immense">20sp</dimen>
 
     <!-- Tabs -->
     <dimen name="tab_padding_top_bottom">6dp</dimen>

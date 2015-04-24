@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/pic_background_004"
+    android:background="@drawable/pic_background_005"
     tools:context="com.example.sdmusicplayer.MainActivity$PlaceholderFragment" >
 
     <LinearLayout
@@ -14,82 +14,74 @@
 
         <TextView
             android:id="@+id/label_local_music"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/MainFunctionText"
             android:layout_marginLeft="6dp"
             android:layout_marginRight="3dp"
-            android:layout_marginTop="6dp"
             android:layout_weight="1"
-            android:background="@drawable/text_background_selector"
             android:drawableLeft="@drawable/icon_local_32"
-            android:drawablePadding="15dp"
-            android:gravity="center_vertical"
-            android:padding="12dp"
-            android:text="@string/label_local_music"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:text="@string/label_local_music" />
 
         <TextView
             android:id="@+id/label_my_favorite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/MainFunctionText"
             android:layout_weight="1"
             android:layout_marginLeft="3dp"
             android:layout_marginRight="6dp"
-            android:layout_marginTop="6dp"
-            android:background="@drawable/text_background_selector"
             android:drawableLeft="@drawable/icon_favoritelist_32"
-            android:drawablePadding="15dp"
-            android:gravity="center_vertical"
-            android:padding="12dp"
-            android:text="@string/label_my_favorite"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:text="@string/label_my_favorite" />
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/line_2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"        
+        android:layout_above="@+id/line_3"
         android:orientation="horizontal" >
 
         <TextView
             android:id="@+id/label_recent_play"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/MainFunctionText"
             android:layout_weight="1"
-            android:layout_marginBottom="6dp"
             android:layout_marginLeft="6dp"
             android:layout_marginRight="3dp"
-            android:layout_marginTop="6dp"
-            android:background="@drawable/text_background_selector"
             android:drawableLeft="@drawable/icon_history_play_32"
-            android:drawablePadding="15dp"
-            android:gravity="center_vertical"
-            android:padding="12dp"
-            android:text="@string/label_recent_play" 
-            android:textColor="@color/white"
-            android:textSize="20sp"/>
+            android:text="@string/label_recent_play" />
 
         <TextView
             android:id="@+id/label_play_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/MainFunctionText"
             android:layout_weight="1"
-            android:layout_marginBottom="6dp"
             android:layout_marginLeft="3dp"
             android:layout_marginRight="6dp"
-            android:layout_marginTop="6dp"
-            android:background="@drawable/text_background_selector"
             android:drawableLeft="@drawable/icon_play_lists_32"
-            android:drawablePadding="15dp"
-            android:gravity="center_vertical"
-            android:padding="12dp"
-            android:text="@string/label_play_list"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:text="@string/label_play_list" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/line_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom ="6dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/label_recent_add"
+            style="@style/MainFunctionText"
+            android:layout_weight="1"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="3dp"
+            android:drawableLeft="@drawable/icon_recent_add_32"
+            android:text="@string/label_recent_add" />
+
+        <TextView
+            android:id="@+id/label_play_queue"
+            style="@style/MainFunctionText"
+            android:layout_weight="1"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="6dp"
+            android:drawableLeft="@drawable/icon_play_queue_32"
+            android:text="@string/label_play_queue" />
     </LinearLayout>
 
 </RelativeLayout>

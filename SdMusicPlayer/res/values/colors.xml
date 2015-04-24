@@ -22,6 +22,7 @@
 
     <!-- Black -->
     <color name="black">#ff000000</color>
+    <color name="lightblack">#88000000</color>
 
     <!-- White -->
     <color name="white">#ffffffff</color>
@@ -36,6 +37,7 @@
     <color name="lightWhite">#77ffffff</color>
     <!-- light White -->
     <color name="lightBlue">#7733b5e5</color>
+    <color name="water">#99C4E1FF</color>    
     
 
 </resources>

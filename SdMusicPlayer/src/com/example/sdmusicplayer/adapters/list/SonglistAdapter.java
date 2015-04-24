@@ -28,7 +28,6 @@ public class SonglistAdapter extends ListViewAdapter {
     	}
     	long duration = mCursor.getInt(mCursor.getColumnIndexOrThrow(AudioColumns.DURATION))/1000;
     	mLineDuration = MusicUtils.makeTimeString(mContext, duration);
-    	//mLineDuration = duration / 60 + ":" + duration % 60; 
         mImageData = new String[]{ mLineTwoText };        
         mPlayingId = MusicUtils.getCurrentAudioId();
         mCurrentId = mCursor.getLong(mCursor.getColumnIndexOrThrow(BaseColumns._ID));      

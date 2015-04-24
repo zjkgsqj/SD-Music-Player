@@ -44,7 +44,7 @@
 	                android:layout_toRightOf="@+id/bottom_action_bar_album_art"
 	                android:paddingLeft="@dimen/bottom_action_bar_padding_left"
 	                android:textColor="@color/transparent_black"
-	                android:textSize="@dimen/text_size_micro"
+	                android:textSize="@dimen/text_size_small"
 	                android:textStyle="bold" />
 	
 	            <TextView

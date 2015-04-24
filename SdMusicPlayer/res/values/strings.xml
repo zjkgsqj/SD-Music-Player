@@ -182,7 +182,8 @@
     <!-- Titles for Albums/Artist screens -->
     <string name="artist_page_title">" 艺术家: "</string>
     <string name="album_page_title">" 专辑: "</string>
-    <string name="Folder_page_title">" 文件夹: "</string>
+    <string name="folder_page_title">" 文件夹: "</string>
+    <string name="playlist_page_title">" 播放列表: "</string>
     
     <!--  Simple EQ -->
     <string name="simple_eq_page_title">Equalizer</string>
@@ -199,6 +200,8 @@
     <string name="label_local_music">本地文件</string>
     <string name="label_my_favorite">我的最爱</string>
     <string name="label_recent_play">最近播放</string>
-    <string name="label_play_list">播放队列</string>
+    <string name="label_recent_add">最近添加</string>
+    <string name="label_play_list">播放列表</string>
+    <string name="label_play_queue">队\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020列</string>    
 
 </resources>

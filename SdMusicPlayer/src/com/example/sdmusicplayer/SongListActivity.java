@@ -11,8 +11,11 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore.Audio;
+import android.provider.MediaStore.Audio.AudioColumns;
+import android.provider.MediaStore.Audio.Playlists;
 import android.provider.MediaStore.Files;
 import android.provider.MediaStore.Files.FileColumns;
+import android.provider.MediaStore.MediaColumns;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +27,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.example.sdmusicplayer.adapters.base.ListViewAdapter;
+import com.example.sdmusicplayer.adapters.list.PlaylistAdapter;
 import com.example.sdmusicplayer.adapters.list.SonglistAdapter;
 import com.example.sdmusicplayer.fragments.BottomActionBarFragment;
 import com.example.sdmusicplayer.helpers.utils.MusicUtils;
@@ -49,6 +53,7 @@ public class SongListActivity extends FragmentActivity implements ServiceConnect
 	protected ListView mListView;
 	protected Cursor mCursor;
 	private Bundle bundle;
+	private String mType;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +68,7 @@ public class SongListActivity extends FragmentActivity implements ServiceConnect
 
 		Intent intent = getIntent();
         bundle = savedInstanceState != null ? savedInstanceState : intent.getExtras();
-        
+        mType = bundle.getString(Constants.SOURCE_TYPE);
 		mBActionbar =(BottomActionBarFragment) getSupportFragmentManager().findFragmentById(R.id.bottomactionbar_new);		  
 		mBActionbar.setUpQueueSwitch(this);        
 		mPanel = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
@@ -146,36 +151,85 @@ public class SongListActivity extends FragmentActivity implements ServiceConnect
 	
 	private void initSongList() {
 		if(mCursor==null){
-			String type = bundle.getString(Constants.SOURCE_TYPE);
-			ContentResolver resolver = getContentResolver();
-			StringBuilder mSelection = new StringBuilder();
-			/*// 过滤大小小于1M，时长小于1分钟的音频
-			mSelection.append(Media.SIZE + " > " + FILTER_SIZE);
-			mSelection.append(" and " + Media.DURATION + " > " + FILTER_DURATION);*/
-			if(Constants.TYPE_FOLDER.equals(type)){
-				String folder = bundle.getString(FileColumns.PARENT);
-				mSelection.append(FileColumns.MEDIA_TYPE).append(" = ").append(FileColumns.MEDIA_TYPE_AUDIO);
-				mSelection.append(" and ").append(FileColumns.PARENT).append(" = ").append(folder);
-				mCursor = resolver.query(Files.getContentUri(Constants.EXTERNAL),
-						null, mSelection.toString(), null, Audio.Media.DEFAULT_SORT_ORDER);
-			}else if(Constants.TYPE_SONG.equals(type)){
-				mCursor = resolver.query(Audio.Media.EXTERNAL_CONTENT_URI,
-						null, null, null, Audio.Media.DEFAULT_SORT_ORDER);
-			}
+			queryCursorByType();
 		}
 		mListView = (ListView) findViewById(R.id.songList);
-		mAdapter =new SonglistAdapter(this, R.layout.listview_song_item, mCursor,
-				new String[] {}, new int[] {}, 0);
-		mListView.setAdapter(mAdapter);
-		mListView.setOnItemClickListener(new OnItemClickListener(){
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
-					long id) {
-				MusicUtils.playAll(SongListActivity.this, mCursor, position);				
-			}			
-		});
+		if(Constants.TYPE_PLAYLIST.equals(mType)){
+			mAdapter =new PlaylistAdapter(this, R.layout.listview_song_item, mCursor,
+					new String[] {}, new int[] {}, 0);
+			mListView.setAdapter(mAdapter);
+			mListView.setOnItemClickListener(new OnItemClickListener(){
+				@Override
+				public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+						long id) {
+					Cursor mCursor = (Cursor) mListView.getItemAtPosition(position);
+					Long playlistId = mCursor.getLong(mCursor.getColumnIndexOrThrow(Playlists._ID)); 
+					String playlistName = mCursor.getString(mCursor.getColumnIndexOrThrow(Playlists.NAME)); 
+					Bundle bundle = new Bundle();
+	            	bundle.putString(Constants.SOURCE_TYPE, Constants.TYPE_PLAYLIST_LIST);
+	            	bundle.putString(Constants.PLAYLIST_NAME, playlistName);
+	            	bundle.putLong(Constants.PLAYLIST_ID, playlistId);
+	            	Intent mIntent = new Intent(SongListActivity.this, SongListActivity.class);
+	            	mIntent.putExtras(bundle);
+					startActivity(mIntent);				
+				}			
+			});
+		}else{
+			mAdapter =new SonglistAdapter(this, R.layout.listview_song_item, mCursor,
+					new String[] {}, new int[] {}, 0);
+			mListView.setAdapter(mAdapter);
+			mListView.setOnItemClickListener(new OnItemClickListener(){
+				@Override
+				public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+						long id) {
+					MusicUtils.playAll(SongListActivity.this, mCursor, position);				
+				}			
+			});
+		}
 	}
 
+	/**
+	 * 根据类型获取cursor
+	 */
+	private void queryCursorByType(){
+		ContentResolver resolver = getContentResolver();
+		StringBuilder mSelection = new StringBuilder();
+		/*// 过滤大小小于1M，时长小于1分钟的音频
+		mSelection.append(Media.SIZE + " > " + FILTER_SIZE);
+		mSelection.append(" and " + Media.DURATION + " > " + FILTER_DURATION);*/
+		if(Constants.TYPE_FOLDER.equals(mType)){
+			String folder = bundle.getString(FileColumns.PARENT);
+			mSelection.append(FileColumns.MEDIA_TYPE).append(" = ").append(FileColumns.MEDIA_TYPE_AUDIO);
+			mSelection.append(" and ").append(FileColumns.PARENT).append(" = ").append(folder);
+			mCursor = resolver.query(Files.getContentUri(Constants.EXTERNAL),
+					null, mSelection.toString(), null, Audio.Media.DEFAULT_SORT_ORDER);
+		}else if(Constants.TYPE_SONG.equals(mType)){
+			mCursor = resolver.query(Audio.Media.EXTERNAL_CONTENT_URI,
+					null, null, null, Audio.Media.DEFAULT_SORT_ORDER);
+		}else if(Constants.TYPE_RECENT_ADD.equals(mType)){
+			int X = MusicUtils.getIntPref(this, Constants.NUMWEEKS, 5) * 3600 * 24 * 7;
+			mSelection.append(MediaColumns.TITLE + " != ''");
+			mSelection.append(" AND " + AudioColumns.IS_MUSIC + "=1");
+			mSelection.append(" AND " + MediaColumns.DATE_ADDED + ">"
+	                + (System.currentTimeMillis() / 1000 - X));
+			String mSortOrder = MediaColumns.DATE_ADDED + " DESC";
+			mCursor = resolver.query(Audio.Media.EXTERNAL_CONTENT_URI,
+					null, mSelection.toString(), null, mSortOrder);
+		}else if(Constants.TYPE_PLAYLIST.equals(mType)){
+			String[] mProjection = new String[] {
+                    Playlists._ID, Playlists.NAME,
+                    " count(" + Playlists.Members._ID + ") as " + Constants.NUMSONGS
+            };
+			mSelection.append(" 1=1 ) group by ( ").append(Playlists.Members._ID);
+			mCursor = resolver.query(Audio.Playlists.EXTERNAL_CONTENT_URI,
+					mProjection, mSelection.toString(), null, Playlists.NAME);
+		}else if(Constants.TYPE_PLAYLIST_LIST.equals(mType)){			
+			Long mPlaylistId = bundle.getLong(Constants.PLAYLIST_ID);
+			mCursor = resolver.query(Playlists.Members.getContentUri(Constants.EXTERNAL,
+					mPlaylistId),null, null, null, Playlists.Members.AUDIO_ID);			
+		}
+	}
+	
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder obj) {
 		MusicUtils.mService = IMusicService.Stub.asInterface(obj);
@@ -226,8 +280,17 @@ public class SongListActivity extends FragmentActivity implements ServiceConnect
 	
 	private void setTitle() {
 		if(bundle != null){
-			if(Constants.TYPE_FOLDER.equals(bundle.getString(Constants.SOURCE_TYPE))){
-				setTitle(getString(R.string.Folder_page_title) + bundle.getString(Constants.FOLDER_NAME));
+			mType = bundle.getString(Constants.SOURCE_TYPE);
+			if(Constants.TYPE_FOLDER.equals(mType)){
+				setTitle(getString(R.string.folder_page_title) 
+						+ bundle.getString(Constants.FOLDER_NAME));
+			}else if(Constants.TYPE_RECENT_ADD.equals(mType)){
+				setTitle(getString(R.string.label_recent_add));
+			}else if(Constants.TYPE_PLAYLIST.equals(mType)){
+				setTitle(getString(R.string.label_play_list));
+			}else if(Constants.TYPE_PLAYLIST_LIST.equals(mType)){
+				setTitle(getString(R.string.playlist_page_title) 
+						+ bundle.getString(Constants.PLAYLIST_NAME));
 			}
 		}
 	}
